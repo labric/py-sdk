@@ -14,6 +14,7 @@ from ..errors.bad_request_error import BadRequestError
 from ..errors.forbidden_error import ForbiddenError
 from ..errors.internal_server_error import InternalServerError
 from ..errors.not_found_error import NotFoundError
+from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.error_schema import ErrorSchema
@@ -72,6 +73,9 @@ class RawDataClient:
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
+
+        A write that waits too long on rows other writes are changing fails with
+        429 and changes nothing. Retry it after the Retry-After header's delay.
 
         Requires an API key with the `write` scope.
 
@@ -189,6 +193,17 @@ class RawDataClient:
                         ),
                     ),
                 )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise InternalServerError(
                     headers=dict(_response.headers),
@@ -255,6 +270,9 @@ class AsyncRawDataClient:
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
+
+        A write that waits too long on rows other writes are changing fails with
+        429 and changes nothing. Retry it after the Retry-After header's delay.
 
         Requires an API key with the `write` scope.
 
@@ -368,6 +386,17 @@ class AsyncRawDataClient:
                         ValidationErrorSchema,
                         parse_obj_as(
                             type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),

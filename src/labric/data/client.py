@@ -70,6 +70,9 @@ class DataClient:
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
 
+        A write that waits too long on rows other writes are changing fails with
+        429 and changes nothing. Retry it after the Retry-After header's delay.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -177,6 +180,9 @@ class AsyncDataClient:
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
+
+        A write that waits too long on rows other writes are changing fails with
+        429 and changes nothing. Retry it after the Retry-After header's delay.
 
         Requires an API key with the `write` scope.
 
