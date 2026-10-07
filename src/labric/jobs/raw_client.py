@@ -23,6 +23,7 @@ from ..types.job_trigger_category import JobTriggerCategory
 from ..types.off_platform_job_execution_schema import OffPlatformJobExecutionSchema
 from ..types.parameter_definition_schema import ParameterDefinitionSchema
 from ..types.revert_result_schema import RevertResultSchema
+from ..types.script_edit_schema import ScriptEditSchema
 from ..types.start_job_execution_schema import StartJobExecutionSchema
 from ..types.tools_job_schema import ToolsJobSchema
 from ..types.validation_error_schema import ValidationErrorSchema
@@ -344,6 +345,7 @@ class RawJobsClient:
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
         code: typing.Optional[str] = OMIT,
+        edits: typing.Optional[typing.Sequence[ScriptEditSchema]] = OMIT,
         archived: typing.Optional[bool] = OMIT,
         trigger_enabled: typing.Optional[bool] = OMIT,
         trigger_category: typing.Optional[JobTriggerCategory] = OMIT,
@@ -356,9 +358,11 @@ class RawJobsClient:
         Change a job's name, description, code, trigger, or parameters, or
         archive it.
 
-        Only the fields passed are changed. New code is stored as a new version of
-        the job's script, so earlier executions keep the version they ran. To
-        create a job, use create_job instead.
+        Only the fields passed are changed. To change part of the script, pass
+        edits: exact replacements of text in the current script. Pass code only to
+        replace the whole script. New code is stored as a new version of the job's
+        script, so earlier executions keep the version they ran. To create a job,
+        use create_job instead.
 
         Requires an API key with the `write` scope.
 
@@ -373,7 +377,10 @@ class RawJobsClient:
             New description for the job. Pass an empty string to clear it.
 
         code : typing.Optional[str]
-            New Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block.
+            Complete new Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block. For a change to part of the script, pass edits instead.
+
+        edits : typing.Optional[typing.Sequence[ScriptEditSchema]]
+            Replacements applied in order to the job's current script, stored as a new script version. Each old_string is matched against the script as left by the edits before it. If any edit fails to match, no change is saved. Cannot be combined with code.
 
         archived : typing.Optional[bool]
             True archives the job, hiding it from the active job list; false restores it.
@@ -408,6 +415,9 @@ class RawJobsClient:
                 "name": name,
                 "description": description,
                 "code": code,
+                "edits": convert_and_respect_annotation_metadata(
+                    object_=edits, annotation=typing.Optional[typing.Sequence[ScriptEditSchema]], direction="write"
+                ),
                 "archived": archived,
                 "trigger_enabled": trigger_enabled,
                 "trigger_category": trigger_category,
@@ -1204,6 +1214,7 @@ class AsyncRawJobsClient:
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
         code: typing.Optional[str] = OMIT,
+        edits: typing.Optional[typing.Sequence[ScriptEditSchema]] = OMIT,
         archived: typing.Optional[bool] = OMIT,
         trigger_enabled: typing.Optional[bool] = OMIT,
         trigger_category: typing.Optional[JobTriggerCategory] = OMIT,
@@ -1216,9 +1227,11 @@ class AsyncRawJobsClient:
         Change a job's name, description, code, trigger, or parameters, or
         archive it.
 
-        Only the fields passed are changed. New code is stored as a new version of
-        the job's script, so earlier executions keep the version they ran. To
-        create a job, use create_job instead.
+        Only the fields passed are changed. To change part of the script, pass
+        edits: exact replacements of text in the current script. Pass code only to
+        replace the whole script. New code is stored as a new version of the job's
+        script, so earlier executions keep the version they ran. To create a job,
+        use create_job instead.
 
         Requires an API key with the `write` scope.
 
@@ -1233,7 +1246,10 @@ class AsyncRawJobsClient:
             New description for the job. Pass an empty string to clear it.
 
         code : typing.Optional[str]
-            New Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block.
+            Complete new Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block. For a change to part of the script, pass edits instead.
+
+        edits : typing.Optional[typing.Sequence[ScriptEditSchema]]
+            Replacements applied in order to the job's current script, stored as a new script version. Each old_string is matched against the script as left by the edits before it. If any edit fails to match, no change is saved. Cannot be combined with code.
 
         archived : typing.Optional[bool]
             True archives the job, hiding it from the active job list; false restores it.
@@ -1268,6 +1284,9 @@ class AsyncRawJobsClient:
                 "name": name,
                 "description": description,
                 "code": code,
+                "edits": convert_and_respect_annotation_metadata(
+                    object_=edits, annotation=typing.Optional[typing.Sequence[ScriptEditSchema]], direction="write"
+                ),
                 "archived": archived,
                 "trigger_enabled": trigger_enabled,
                 "trigger_category": trigger_category,

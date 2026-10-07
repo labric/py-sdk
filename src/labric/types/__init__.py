@@ -35,6 +35,7 @@ if typing.TYPE_CHECKING:
     from .queryable_table_schema import QueryableTableSchema
     from .revert_result_schema import RevertResultSchema
     from .save_annotation_schema import SaveAnnotationSchema
+    from .script_edit_schema import ScriptEditSchema
     from .sent_notification_schema import SentNotificationSchema
     from .sent_notification_schema_status import SentNotificationSchemaStatus
     from .series_write import SeriesWrite
@@ -83,6 +84,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "QueryableTableSchema": ".queryable_table_schema",
     "RevertResultSchema": ".revert_result_schema",
     "SaveAnnotationSchema": ".save_annotation_schema",
+    "ScriptEditSchema": ".script_edit_schema",
     "SentNotificationSchema": ".sent_notification_schema",
     "SentNotificationSchemaStatus": ".sent_notification_schema_status",
     "SeriesWrite": ".series_write",
@@ -155,6 +157,7 @@ __all__ = [
     "QueryableTableSchema",
     "RevertResultSchema",
     "SaveAnnotationSchema",
+    "ScriptEditSchema",
     "SentNotificationSchema",
     "SentNotificationSchemaStatus",
     "SeriesWrite",
