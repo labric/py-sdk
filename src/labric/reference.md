@@ -2344,15 +2344,7 @@ client.models.predict(
 <dl>
 <dd>
 
-**ml_model_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**ml_model_name:** `typing.Optional[str]` 
+**pixel_threshold:** `typing.Optional[float]` — Segmentation models only. A pixel belongs to a predicted region when the model's probability for it exceeds this. Lower values find fainter regions and grow existing ones. Higher values keep only confident pixels. Probabilities are uncalibrated, so useful values depend on the model.
     
 </dd>
 </dl>
@@ -2368,7 +2360,31 @@ client.models.predict(
 <dl>
 <dd>
 
-**max_hole_pixels:** `typing.Optional[int]` — Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+**max_hole_pixels:** `typing.Optional[int]` — Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole. 0 keeps all holes, so ring-shaped predictions stay rings.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**min_confidence:** `typing.Optional[float]` — Segmentation models only. Drops predicted regions whose confidence, the mean probability of their pixels, is below this.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ml_model_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**ml_model_name:** `typing.Optional[str]` 
     
 </dd>
 </dl>

@@ -40,10 +40,12 @@ class RawModelsClient:
         self,
         *,
         data: typing.Sequence[typing.Dict[str, typing.Any]],
-        ml_model_id: typing.Optional[str] = OMIT,
-        ml_model_name: typing.Optional[str] = OMIT,
+        pixel_threshold: typing.Optional[float] = OMIT,
         min_region_pixels: typing.Optional[int] = OMIT,
         max_hole_pixels: typing.Optional[int] = OMIT,
+        min_confidence: typing.Optional[float] = OMIT,
+        ml_model_id: typing.Optional[str] = OMIT,
+        ml_model_name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[PredictResponseSchema]:
         """
@@ -60,15 +62,21 @@ class RawModelsClient:
         ----------
         data : typing.Sequence[typing.Dict[str, typing.Any]]
 
-        ml_model_id : typing.Optional[str]
-
-        ml_model_name : typing.Optional[str]
+        pixel_threshold : typing.Optional[float]
+            Segmentation models only. A pixel belongs to a predicted region when the model's probability for it exceeds this. Lower values find fainter regions and grow existing ones. Higher values keep only confident pixels. Probabilities are uncalibrated, so useful values depend on the model.
 
         min_region_pixels : typing.Optional[int]
             Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
 
         max_hole_pixels : typing.Optional[int]
-            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole. 0 keeps all holes, so ring-shaped predictions stay rings.
+
+        min_confidence : typing.Optional[float]
+            Segmentation models only. Drops predicted regions whose confidence, the mean probability of their pixels, is below this.
+
+        ml_model_id : typing.Optional[str]
+
+        ml_model_name : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -82,11 +90,13 @@ class RawModelsClient:
             "api/v1/ml-models/predict",
             method="POST",
             json={
+                "pixel_threshold": pixel_threshold,
+                "min_region_pixels": min_region_pixels,
+                "max_hole_pixels": max_hole_pixels,
+                "min_confidence": min_confidence,
                 "ml_model_id": ml_model_id,
                 "ml_model_name": ml_model_name,
                 "data": data,
-                "min_region_pixels": min_region_pixels,
-                "max_hole_pixels": max_hole_pixels,
             },
             headers={
                 "content-type": "application/json",
@@ -721,10 +731,12 @@ class AsyncRawModelsClient:
         self,
         *,
         data: typing.Sequence[typing.Dict[str, typing.Any]],
-        ml_model_id: typing.Optional[str] = OMIT,
-        ml_model_name: typing.Optional[str] = OMIT,
+        pixel_threshold: typing.Optional[float] = OMIT,
         min_region_pixels: typing.Optional[int] = OMIT,
         max_hole_pixels: typing.Optional[int] = OMIT,
+        min_confidence: typing.Optional[float] = OMIT,
+        ml_model_id: typing.Optional[str] = OMIT,
+        ml_model_name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[PredictResponseSchema]:
         """
@@ -741,15 +753,21 @@ class AsyncRawModelsClient:
         ----------
         data : typing.Sequence[typing.Dict[str, typing.Any]]
 
-        ml_model_id : typing.Optional[str]
-
-        ml_model_name : typing.Optional[str]
+        pixel_threshold : typing.Optional[float]
+            Segmentation models only. A pixel belongs to a predicted region when the model's probability for it exceeds this. Lower values find fainter regions and grow existing ones. Higher values keep only confident pixels. Probabilities are uncalibrated, so useful values depend on the model.
 
         min_region_pixels : typing.Optional[int]
             Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
 
         max_hole_pixels : typing.Optional[int]
-            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole. 0 keeps all holes, so ring-shaped predictions stay rings.
+
+        min_confidence : typing.Optional[float]
+            Segmentation models only. Drops predicted regions whose confidence, the mean probability of their pixels, is below this.
+
+        ml_model_id : typing.Optional[str]
+
+        ml_model_name : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -763,11 +781,13 @@ class AsyncRawModelsClient:
             "api/v1/ml-models/predict",
             method="POST",
             json={
+                "pixel_threshold": pixel_threshold,
+                "min_region_pixels": min_region_pixels,
+                "max_hole_pixels": max_hole_pixels,
+                "min_confidence": min_confidence,
                 "ml_model_id": ml_model_id,
                 "ml_model_name": ml_model_name,
                 "data": data,
-                "min_region_pixels": min_region_pixels,
-                "max_hole_pixels": max_hole_pixels,
             },
             headers={
                 "content-type": "application/json",
