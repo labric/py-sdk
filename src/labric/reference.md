@@ -2360,6 +2360,22 @@ client.models.predict(
 <dl>
 <dd>
 
+**min_region_pixels:** `typing.Optional[int]` — Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**max_hole_pixels:** `typing.Optional[int]` — Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>

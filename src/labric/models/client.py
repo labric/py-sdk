@@ -36,6 +36,8 @@ class ModelsClient:
         data: typing.Sequence[typing.Dict[str, typing.Any]],
         ml_model_id: typing.Optional[str] = OMIT,
         ml_model_name: typing.Optional[str] = OMIT,
+        min_region_pixels: typing.Optional[int] = OMIT,
+        max_hole_pixels: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> PredictResponseSchema:
         """
@@ -55,6 +57,12 @@ class ModelsClient:
         ml_model_id : typing.Optional[str]
 
         ml_model_name : typing.Optional[str]
+
+        min_region_pixels : typing.Optional[int]
+            Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
+
+        max_hole_pixels : typing.Optional[int]
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -76,7 +84,12 @@ class ModelsClient:
         )
         """
         _response = self._raw_client.predict(
-            data=data, ml_model_id=ml_model_id, ml_model_name=ml_model_name, request_options=request_options
+            data=data,
+            ml_model_id=ml_model_id,
+            ml_model_name=ml_model_name,
+            min_region_pixels=min_region_pixels,
+            max_hole_pixels=max_hole_pixels,
+            request_options=request_options,
         )
         return _response.data
 
@@ -291,6 +304,8 @@ class AsyncModelsClient:
         data: typing.Sequence[typing.Dict[str, typing.Any]],
         ml_model_id: typing.Optional[str] = OMIT,
         ml_model_name: typing.Optional[str] = OMIT,
+        min_region_pixels: typing.Optional[int] = OMIT,
+        max_hole_pixels: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> PredictResponseSchema:
         """
@@ -310,6 +325,12 @@ class AsyncModelsClient:
         ml_model_id : typing.Optional[str]
 
         ml_model_name : typing.Optional[str]
+
+        min_region_pixels : typing.Optional[int]
+            Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
+
+        max_hole_pixels : typing.Optional[int]
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -339,7 +360,12 @@ class AsyncModelsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.predict(
-            data=data, ml_model_id=ml_model_id, ml_model_name=ml_model_name, request_options=request_options
+            data=data,
+            ml_model_id=ml_model_id,
+            ml_model_name=ml_model_name,
+            min_region_pixels=min_region_pixels,
+            max_hole_pixels=max_hole_pixels,
+            request_options=request_options,
         )
         return _response.data
 

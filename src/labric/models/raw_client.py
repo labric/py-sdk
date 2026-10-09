@@ -42,6 +42,8 @@ class RawModelsClient:
         data: typing.Sequence[typing.Dict[str, typing.Any]],
         ml_model_id: typing.Optional[str] = OMIT,
         ml_model_name: typing.Optional[str] = OMIT,
+        min_region_pixels: typing.Optional[int] = OMIT,
+        max_hole_pixels: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[PredictResponseSchema]:
         """
@@ -62,6 +64,12 @@ class RawModelsClient:
 
         ml_model_name : typing.Optional[str]
 
+        min_region_pixels : typing.Optional[int]
+            Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
+
+        max_hole_pixels : typing.Optional[int]
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -77,6 +85,8 @@ class RawModelsClient:
                 "ml_model_id": ml_model_id,
                 "ml_model_name": ml_model_name,
                 "data": data,
+                "min_region_pixels": min_region_pixels,
+                "max_hole_pixels": max_hole_pixels,
             },
             headers={
                 "content-type": "application/json",
@@ -713,6 +723,8 @@ class AsyncRawModelsClient:
         data: typing.Sequence[typing.Dict[str, typing.Any]],
         ml_model_id: typing.Optional[str] = OMIT,
         ml_model_name: typing.Optional[str] = OMIT,
+        min_region_pixels: typing.Optional[int] = OMIT,
+        max_hole_pixels: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[PredictResponseSchema]:
         """
@@ -733,6 +745,12 @@ class AsyncRawModelsClient:
 
         ml_model_name : typing.Optional[str]
 
+        min_region_pixels : typing.Optional[int]
+            Segmentation models only. Drops predicted regions with fewer pixels than this. Pixels are counted on the hole-filled mask at the model's inference resolution.
+
+        max_hole_pixels : typing.Optional[int]
+            Segmentation models only. Fills enclosed holes of up to this many pixels in each predicted mask before it is split into regions. Null fills every hole; 0 keeps all holes, so ring-shaped predictions stay rings.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -748,6 +766,8 @@ class AsyncRawModelsClient:
                 "ml_model_id": ml_model_id,
                 "ml_model_name": ml_model_name,
                 "data": data,
+                "min_region_pixels": min_region_pixels,
+                "max_hole_pixels": max_hole_pixels,
             },
             headers={
                 "content-type": "application/json",
