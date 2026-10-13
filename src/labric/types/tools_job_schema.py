@@ -6,6 +6,7 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .job_trigger_schema import JobTriggerSchema
 from .parameter_definition_schema import ParameterDefinitionSchema
+from .publish_status import PublishStatus
 
 
 class ToolsJobSchema(UniversalBaseModel):
@@ -21,6 +22,11 @@ class ToolsJobSchema(UniversalBaseModel):
     name: str
     description: typing.Optional[str] = None
     archived: bool
+    publish_status: PublishStatus = pydantic.Field()
+    """
+    draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+    """
+
     trigger: typing.Optional[JobTriggerSchema] = None
     parameter_definitions: typing.Optional[typing.List[ParameterDefinitionSchema]] = None
 

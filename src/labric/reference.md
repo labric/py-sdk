@@ -1088,6 +1088,14 @@ client.jobs.update(
 <dl>
 <dd>
 
+**publish_status:** `typing.Optional[PublishStatus]` — draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>

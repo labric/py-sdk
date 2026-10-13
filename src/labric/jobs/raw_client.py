@@ -22,6 +22,7 @@ from ..types.error_schema import ErrorSchema
 from ..types.job_trigger_category import JobTriggerCategory
 from ..types.off_platform_job_execution_schema import OffPlatformJobExecutionSchema
 from ..types.parameter_definition_schema import ParameterDefinitionSchema
+from ..types.publish_status import PublishStatus
 from ..types.revert_result_schema import RevertResultSchema
 from ..types.script_edit_schema import ScriptEditSchema
 from ..types.start_job_execution_schema import StartJobExecutionSchema
@@ -352,6 +353,7 @@ class RawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        publish_status: typing.Optional[PublishStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ToolsJobSchema]:
         """
@@ -400,6 +402,9 @@ class RawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        publish_status : typing.Optional[PublishStatus]
+            draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -428,6 +433,7 @@ class RawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "publish_status": publish_status,
             },
             headers={
                 "content-type": "application/json",
@@ -1221,6 +1227,7 @@ class AsyncRawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        publish_status: typing.Optional[PublishStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ToolsJobSchema]:
         """
@@ -1269,6 +1276,9 @@ class AsyncRawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        publish_status : typing.Optional[PublishStatus]
+            draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1297,6 +1307,7 @@ class AsyncRawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "publish_status": publish_status,
             },
             headers={
                 "content-type": "application/json",

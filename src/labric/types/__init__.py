@@ -30,6 +30,7 @@ if typing.TYPE_CHECKING:
     from .parameter_definition_schema_widget_type import ParameterDefinitionSchemaWidgetType
     from .predict_response_schema import PredictResponseSchema
     from .predicted_annotation_schema import PredictedAnnotationSchema
+    from .publish_status import PublishStatus
     from .quality_preset import QualityPreset
     from .query_result import QueryResult
     from .queryable_column_schema import QueryableColumnSchema
@@ -80,6 +81,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ParameterDefinitionSchemaWidgetType": ".parameter_definition_schema_widget_type",
     "PredictResponseSchema": ".predict_response_schema",
     "PredictedAnnotationSchema": ".predicted_annotation_schema",
+    "PublishStatus": ".publish_status",
     "QualityPreset": ".quality_preset",
     "QueryResult": ".query_result",
     "QueryableColumnSchema": ".queryable_column_schema",
@@ -154,6 +156,7 @@ __all__ = [
     "ParameterDefinitionSchemaWidgetType",
     "PredictResponseSchema",
     "PredictedAnnotationSchema",
+    "PublishStatus",
     "QualityPreset",
     "QueryResult",
     "QueryableColumnSchema",
