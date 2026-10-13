@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .activity_actor_schema import ActivityActorSchema
 
 
 class AnnotationSchema(UniversalBaseModel):
@@ -14,6 +15,7 @@ class AnnotationSchema(UniversalBaseModel):
     height: typing.Optional[int] = None
     is_human_vetted: typing.Optional[bool] = None
     foreground_fraction: typing.Optional[float] = None
+    user: typing.Optional[ActivityActorSchema] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

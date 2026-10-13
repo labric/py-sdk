@@ -6,6 +6,7 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
+    from .activity_actor_schema import ActivityActorSchema
     from .agent_run_event import AgentRunEvent
     from .agent_run_request import AgentRunRequest
     from .agent_run_response import AgentRunResponse
@@ -55,6 +56,7 @@ if typing.TYPE_CHECKING:
     from .write_data_response import WriteDataResponse
     from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
+    "ActivityActorSchema": ".activity_actor_schema",
     "AgentRunEvent": ".agent_run_event",
     "AgentRunRequest": ".agent_run_request",
     "AgentRunResponse": ".agent_run_response",
@@ -128,6 +130,7 @@ def __dir__():
 
 
 __all__ = [
+    "ActivityActorSchema",
     "AgentRunEvent",
     "AgentRunRequest",
     "AgentRunResponse",

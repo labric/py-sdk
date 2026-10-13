@@ -7,6 +7,7 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from .types import (
+        ActivityActorSchema,
         AgentRunEvent,
         AgentRunRequest,
         AgentRunResponse,
@@ -80,6 +81,7 @@ if typing.TYPE_CHECKING:
         LabricWriteSchemaTargetType,
     )
 _dynamic_imports: typing.Dict[str, str] = {
+    "ActivityActorSchema": ".types",
     "AgentRunEvent": ".types",
     "AgentRunRequest": ".types",
     "AgentRunResponse": ".types",
@@ -181,6 +183,7 @@ def __dir__():
 
 
 __all__ = [
+    "ActivityActorSchema",
     "AgentRunEvent",
     "AgentRunRequest",
     "AgentRunResponse",
