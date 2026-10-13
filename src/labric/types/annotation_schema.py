@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .activity_actor_schema import ActivityActorSchema
+from .mask_bounding_box_schema import MaskBoundingBoxSchema
 
 
 class AnnotationSchema(UniversalBaseModel):
@@ -15,6 +16,7 @@ class AnnotationSchema(UniversalBaseModel):
     height: typing.Optional[int] = None
     is_human_vetted: typing.Optional[bool] = None
     foreground_fraction: typing.Optional[float] = None
+    bbox: typing.Optional[MaskBoundingBoxSchema] = None
     user: typing.Optional[ActivityActorSchema] = None
 
     if IS_PYDANTIC_V2:

@@ -23,6 +23,7 @@ if typing.TYPE_CHECKING:
     from .file_upload_url_schema import FileUploadUrlSchema
     from .job_trigger_category import JobTriggerCategory
     from .job_trigger_schema import JobTriggerSchema
+    from .mask_bounding_box_schema import MaskBoundingBoxSchema
     from .ml_model_task_type import MlModelTaskType
     from .ml_problem_type import MlProblemType
     from .off_platform_job_execution_schema import OffPlatformJobExecutionSchema
@@ -74,6 +75,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FileUploadUrlSchema": ".file_upload_url_schema",
     "JobTriggerCategory": ".job_trigger_category",
     "JobTriggerSchema": ".job_trigger_schema",
+    "MaskBoundingBoxSchema": ".mask_bounding_box_schema",
     "MlModelTaskType": ".ml_model_task_type",
     "MlProblemType": ".ml_problem_type",
     "OffPlatformJobExecutionSchema": ".off_platform_job_execution_schema",
@@ -149,6 +151,7 @@ __all__ = [
     "FileUploadUrlSchema",
     "JobTriggerCategory",
     "JobTriggerSchema",
+    "MaskBoundingBoxSchema",
     "MlModelTaskType",
     "MlProblemType",
     "OffPlatformJobExecutionSchema",
