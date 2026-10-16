@@ -66,10 +66,11 @@ class RawDataClient:
         all of those problems are reported together in errors. Each has a path
         naming its place in the request, such as tables[1].rows[0].sample. Keys
         for upsert, update, and delete are matched as each table write is
-        applied, and any failure rolls back the whole request. The write is recorded under a job execution,
-        created if none is given. Reverting that execution deletes the rows it
-        created along with their series; updates, deletes, and series written to
-        existing parents are not undone.
+        applied, and any failure rolls back the whole request. The write is
+        recorded under the given job execution, the running job's execution when
+        called from a job script, or a new one. Reverting that execution deletes
+        the rows it created along with their series. Updates, deletes, and series
+        written to existing parents are not undone.
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
@@ -88,7 +89,7 @@ class RawDataClient:
             Raw series, applied after the table writes. Writing a series replaces any series the parent already has in that table. At most 250,000 values across all columns of all series.
 
         job_execution_id : typing.Optional[str]
-            Job execution to record this write under. When omitted, one is created and returned so the write can be reverted as a unit.
+            Job execution to record this write under. When omitted, a job script's write uses the running job's execution. Other writes get a new execution, returned so the write can be reverted as a unit.
 
         job_name : typing.Optional[str]
             Name of the job an auto-created execution belongs to. Defaults to 'Off-Platform Manual Job'.
@@ -263,10 +264,11 @@ class AsyncRawDataClient:
         all of those problems are reported together in errors. Each has a path
         naming its place in the request, such as tables[1].rows[0].sample. Keys
         for upsert, update, and delete are matched as each table write is
-        applied, and any failure rolls back the whole request. The write is recorded under a job execution,
-        created if none is given. Reverting that execution deletes the rows it
-        created along with their series; updates, deletes, and series written to
-        existing parents are not undone.
+        applied, and any failure rolls back the whole request. The write is
+        recorded under the given job execution, the running job's execution when
+        called from a job script, or a new one. Reverting that execution deletes
+        the rows it created along with their series. Updates, deletes, and series
+        written to existing parents are not undone.
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
@@ -285,7 +287,7 @@ class AsyncRawDataClient:
             Raw series, applied after the table writes. Writing a series replaces any series the parent already has in that table. At most 250,000 values across all columns of all series.
 
         job_execution_id : typing.Optional[str]
-            Job execution to record this write under. When omitted, one is created and returned so the write can be reverted as a unit.
+            Job execution to record this write under. When omitted, a job script's write uses the running job's execution. Other writes get a new execution, returned so the write can be reverted as a unit.
 
         job_name : typing.Optional[str]
             Name of the job an auto-created execution belongs to. Defaults to 'Off-Platform Manual Job'.
