@@ -102,8 +102,9 @@ class FilesClient:
         The [Upload files](https://docs.labric.co/upload-files) guide walks
         through both flows.
 
-        At least one of job_execution_id and instrument_id is required: pass a
-        job_execution_id for an artifact of a job running in a sandbox, which also
+        At least one of job_execution_id and instrument_id is required, except
+        in a job script, whose uploads default to the running job's execution.
+        Pass a job_execution_id for an artifact of a job execution, which also
         records provenance linking the file to that execution, and pass an
         instrument_id for data captured off-platform by an instrument the Sync app
         cannot reach, which attaches the file to that instrument so instrument
@@ -164,8 +165,9 @@ class FilesClient:
         the [Upload files](https://docs.labric.co/upload-files) guide shows them
         with curl.
 
-        At least one of job_execution_id and instrument_id is required: pass a
-        job_execution_id for an artifact of a job running in a sandbox, which also
+        At least one of job_execution_id and instrument_id is required, except
+        in a job script, whose uploads default to the running job's execution.
+        Pass a job_execution_id for an artifact of a job execution, which also
         records provenance linking the file to that execution, and pass an
         instrument_id for data captured off-platform by an instrument the Sync app
         cannot reach, which attaches the file to that instrument so instrument
@@ -182,7 +184,7 @@ class FilesClient:
             MIME type of the file. Defaults to application/octet-stream, which is also substituted for types a browser could render as a page.
 
         job_execution_id : typing.Optional[str]
-            The job execution producing the file, for a job artifact.
+            The job execution producing the file, for a job artifact. A job script's upload defaults to the running job's execution.
 
         instrument_id : typing.Optional[str]
             The instrument that captured the file, for off-platform data.
@@ -391,8 +393,9 @@ class AsyncFilesClient:
         The [Upload files](https://docs.labric.co/upload-files) guide walks
         through both flows.
 
-        At least one of job_execution_id and instrument_id is required: pass a
-        job_execution_id for an artifact of a job running in a sandbox, which also
+        At least one of job_execution_id and instrument_id is required, except
+        in a job script, whose uploads default to the running job's execution.
+        Pass a job_execution_id for an artifact of a job execution, which also
         records provenance linking the file to that execution, and pass an
         instrument_id for data captured off-platform by an instrument the Sync app
         cannot reach, which attaches the file to that instrument so instrument
@@ -461,8 +464,9 @@ class AsyncFilesClient:
         the [Upload files](https://docs.labric.co/upload-files) guide shows them
         with curl.
 
-        At least one of job_execution_id and instrument_id is required: pass a
-        job_execution_id for an artifact of a job running in a sandbox, which also
+        At least one of job_execution_id and instrument_id is required, except
+        in a job script, whose uploads default to the running job's execution.
+        Pass a job_execution_id for an artifact of a job execution, which also
         records provenance linking the file to that execution, and pass an
         instrument_id for data captured off-platform by an instrument the Sync app
         cannot reach, which attaches the file to that instrument so instrument
@@ -479,7 +483,7 @@ class AsyncFilesClient:
             MIME type of the file. Defaults to application/octet-stream, which is also substituted for types a browser could render as a page.
 
         job_execution_id : typing.Optional[str]
-            The job execution producing the file, for a job artifact.
+            The job execution producing the file, for a job artifact. A job script's upload defaults to the running job's execution.
 
         instrument_id : typing.Optional[str]
             The instrument that captured the file, for off-platform data.
