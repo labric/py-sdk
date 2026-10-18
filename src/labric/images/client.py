@@ -27,6 +27,45 @@ class ImagesClient:
         """
         return self._raw_client
 
+    def list_annotations(
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[AnnotationSchema]:
+        """
+        List the masks saved on an image, oldest first.
+
+        Each annotation has a label, an is_human_vetted flag, and a signed mask_url
+        for the binary mask PNG. Signed URLs expire, so download masks soon after
+        listing them. Results include unvetted masks from automated saves. Only
+        human-vetted masks feed training. The file must be a processed image.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[AnnotationSchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.images.list_annotations(
+            file_id="file_id",
+        )
+        """
+        _response = self._raw_client.list_annotations(file_id, request_options=request_options)
+        return _response.data
+
     def annotate(
         self,
         file_id: str,
@@ -98,6 +137,53 @@ class AsyncImagesClient:
         AsyncRawImagesClient
         """
         return self._raw_client
+
+    async def list_annotations(
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[AnnotationSchema]:
+        """
+        List the masks saved on an image, oldest first.
+
+        Each annotation has a label, an is_human_vetted flag, and a signed mask_url
+        for the binary mask PNG. Signed URLs expire, so download masks soon after
+        listing them. Results include unvetted masks from automated saves. Only
+        human-vetted masks feed training. The file must be a processed image.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[AnnotationSchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.images.list_annotations(
+                file_id="file_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_annotations(file_id, request_options=request_options)
+        return _response.data
 
     async def annotate(
         self,

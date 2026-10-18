@@ -1924,6 +1924,86 @@ client.tools.batch_write(
 </details>
 
 ## images
+<details><summary><code>client.images.<a href="src/labric/images/client.py">list_annotations</a>(...) -> typing.List[AnnotationSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the masks saved on an image, oldest first.
+
+Each annotation has a label, an is_human_vetted flag, and a signed mask_url
+for the binary mask PNG. Signed URLs expire, so download masks soon after
+listing them. Results include unvetted masks from automated saves. Only
+human-vetted masks feed training. The file must be a processed image.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.images.list_annotations(
+    file_id="file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.images.<a href="src/labric/images/client.py">annotate</a>(...) -> typing.List[AnnotationSchema]</code></summary>
 <dl>
 <dd>
