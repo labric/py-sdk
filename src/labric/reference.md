@@ -16,8 +16,8 @@ List source data files available for parser development.
 
 Returns the org's uploaded files, newest first.
 Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
-or a substring of the file name. Use the file-content tool to inspect a
-file's raw contents.
+or a query whose space-separated terms must all appear in the file path,
+ignoring case. Use the file-content tool to inspect a file's raw contents.
 
 Requires an API key with the `read` scope.
 </dd>
