@@ -1,4 +1,109 @@
 # Reference
+## instruments
+<details><summary><code>client.instruments.<a href="src/labric/instruments/client.py">get_device_status_history</a>(...) -> DeviceStatusHistorySchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an instrument's device status history.
+
+Returns the current status of the instrument's paired device and the periods
+it was online, offline, or in error, trimmed to the range and oldest first.
+Gaps between the device's reports are returned as offline periods.
+current_status gives the status now and when it began, or is null if the
+device has never reported; it is offline since the last heartbeat once the
+device stops sending heartbeats. Use it to answer questions about connectivity
+or to reason over it, such as counting disconnections, comparing instruments,
+or lining up offline periods with runs. Times are ISO 8601 with a UTC offset.
+end_time defaults to and is capped at now, and start_time defaults to 7 days
+before end_time. A range with more than 200 periods returns the most recent
+200. The "notes" field flags when the range was adjusted, e.g. because the end
+was capped at now or earlier periods were dropped.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.instruments.get_device_status_history(
+    instrument_id="instrument_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**instrument_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**start_time:** `typing.Optional[datetime.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**end_time:** `typing.Optional[datetime.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## files
 <details><summary><code>client.files.<a href="src/labric/files/client.py">list</a>(...) -> typing.List[FileInfoSchema]</code></summary>
 <dl>

@@ -16,6 +16,7 @@ if typing.TYPE_CHECKING:
     from .data.client import AsyncDataClient, DataClient
     from .files.client import AsyncFilesClient, FilesClient
     from .images.client import AsyncImagesClient, ImagesClient
+    from .instruments.client import AsyncInstrumentsClient, InstrumentsClient
     from .jobs.client import AsyncJobsClient, JobsClient
     from .models.client import AsyncModelsClient, ModelsClient
     from .notifications.client import AsyncNotificationsClient, NotificationsClient
@@ -110,6 +111,7 @@ class BaseLabric:
             max_stream_reconnection_attempts=max_stream_reconnection_attempts,
             logging=logging,
         )
+        self._instruments: typing.Optional[InstrumentsClient] = None
         self._files: typing.Optional[FilesClient] = None
         self._agent: typing.Optional[AgentClient] = None
         self._jobs: typing.Optional[JobsClient] = None
@@ -118,6 +120,14 @@ class BaseLabric:
         self._data: typing.Optional[DataClient] = None
         self._notifications: typing.Optional[NotificationsClient] = None
         self._models: typing.Optional[ModelsClient] = None
+
+    @property
+    def instruments(self):
+        if self._instruments is None:
+            from .instruments.client import InstrumentsClient  # noqa: E402
+
+            self._instruments = InstrumentsClient(client_wrapper=self._client_wrapper)
+        return self._instruments
 
     @property
     def files(self):
@@ -293,6 +303,7 @@ class AsyncBaseLabric:
             max_stream_reconnection_attempts=max_stream_reconnection_attempts,
             logging=logging,
         )
+        self._instruments: typing.Optional[AsyncInstrumentsClient] = None
         self._files: typing.Optional[AsyncFilesClient] = None
         self._agent: typing.Optional[AsyncAgentClient] = None
         self._jobs: typing.Optional[AsyncJobsClient] = None
@@ -301,6 +312,14 @@ class AsyncBaseLabric:
         self._data: typing.Optional[AsyncDataClient] = None
         self._notifications: typing.Optional[AsyncNotificationsClient] = None
         self._models: typing.Optional[AsyncModelsClient] = None
+
+    @property
+    def instruments(self):
+        if self._instruments is None:
+            from .instruments.client import AsyncInstrumentsClient  # noqa: E402
+
+            self._instruments = AsyncInstrumentsClient(client_wrapper=self._client_wrapper)
+        return self._instruments
 
     @property
     def files(self):

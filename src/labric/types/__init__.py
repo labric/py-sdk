@@ -16,11 +16,18 @@ if typing.TYPE_CHECKING:
     from .batch_write_options import BatchWriteOptions
     from .batch_write_options_mode import BatchWriteOptionsMode
     from .batch_write_response import BatchWriteResponse
+    from .current_device_status_schema import CurrentDeviceStatusSchema
+    from .current_device_status_schema_value import CurrentDeviceStatusSchemaValue
+    from .device_status_history_schema import DeviceStatusHistorySchema
+    from .device_status_schema import DeviceStatusSchema
+    from .device_status_schema_status import DeviceStatusSchemaStatus
+    from .device_status_type import DeviceStatusType
     from .error_schema import ErrorSchema
     from .file_content_schema import FileContentSchema
     from .file_info_schema import FileInfoSchema
     from .file_upload_schema import FileUploadSchema
     from .file_upload_url_schema import FileUploadUrlSchema
+    from .instrument_name_schema import InstrumentNameSchema
     from .job_trigger_category import JobTriggerCategory
     from .job_trigger_schema import JobTriggerSchema
     from .mask_bounding_box_schema import MaskBoundingBoxSchema
@@ -68,11 +75,18 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteOptions": ".batch_write_options",
     "BatchWriteOptionsMode": ".batch_write_options_mode",
     "BatchWriteResponse": ".batch_write_response",
+    "CurrentDeviceStatusSchema": ".current_device_status_schema",
+    "CurrentDeviceStatusSchemaValue": ".current_device_status_schema_value",
+    "DeviceStatusHistorySchema": ".device_status_history_schema",
+    "DeviceStatusSchema": ".device_status_schema",
+    "DeviceStatusSchemaStatus": ".device_status_schema_status",
+    "DeviceStatusType": ".device_status_type",
     "ErrorSchema": ".error_schema",
     "FileContentSchema": ".file_content_schema",
     "FileInfoSchema": ".file_info_schema",
     "FileUploadSchema": ".file_upload_schema",
     "FileUploadUrlSchema": ".file_upload_url_schema",
+    "InstrumentNameSchema": ".instrument_name_schema",
     "JobTriggerCategory": ".job_trigger_category",
     "JobTriggerSchema": ".job_trigger_schema",
     "MaskBoundingBoxSchema": ".mask_bounding_box_schema",
@@ -144,11 +158,18 @@ __all__ = [
     "BatchWriteOptions",
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
+    "CurrentDeviceStatusSchema",
+    "CurrentDeviceStatusSchemaValue",
+    "DeviceStatusHistorySchema",
+    "DeviceStatusSchema",
+    "DeviceStatusSchemaStatus",
+    "DeviceStatusType",
     "ErrorSchema",
     "FileContentSchema",
     "FileInfoSchema",
     "FileUploadSchema",
     "FileUploadUrlSchema",
+    "InstrumentNameSchema",
     "JobTriggerCategory",
     "JobTriggerSchema",
     "MaskBoundingBoxSchema",
