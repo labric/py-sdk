@@ -2133,6 +2133,9 @@ the mask editor flags unvetted masks for review, and only vetted masks
 feed training. The file must be a processed image. All-or-nothing: one
 bad entry rejects the whole request.
 
+Masks saved with a job_execution_id are deleted when that execution is
+reverted. In a job script, saves default to the running job's execution.
+
 Requires an API key with the `write` scope.
 </dd>
 </dl>
@@ -2189,6 +2192,14 @@ client.images.annotate(
 <dd>
 
 **annotations:** `typing.List[SaveAnnotationSchema]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_execution_id:** `typing.Optional[str]` — The job execution producing the masks, so reverting it deletes them. A job script's saves default to the running job's execution.
     
 </dd>
 </dl>

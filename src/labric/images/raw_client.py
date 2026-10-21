@@ -152,6 +152,7 @@ class RawImagesClient:
         file_id: str,
         *,
         annotations: typing.Sequence[SaveAnnotationSchema],
+        job_execution_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[AnnotationSchema]]:
         """
@@ -167,6 +168,9 @@ class RawImagesClient:
         feed training. The file must be a processed image. All-or-nothing: one
         bad entry rejects the whole request.
 
+        Masks saved with a job_execution_id are deleted when that execution is
+        reverted. In a job script, saves default to the running job's execution.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -174,6 +178,9 @@ class RawImagesClient:
         file_id : str
 
         annotations : typing.Sequence[SaveAnnotationSchema]
+
+        job_execution_id : typing.Optional[str]
+            The job execution producing the masks, so reverting it deletes them. A job script's saves default to the running job's execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -190,6 +197,7 @@ class RawImagesClient:
                 "annotations": convert_and_respect_annotation_metadata(
                     object_=annotations, annotation=typing.Sequence[SaveAnnotationSchema], direction="write"
                 ),
+                "job_execution_id": job_execution_id,
             },
             headers={
                 "content-type": "application/json",
@@ -418,6 +426,7 @@ class AsyncRawImagesClient:
         file_id: str,
         *,
         annotations: typing.Sequence[SaveAnnotationSchema],
+        job_execution_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[AnnotationSchema]]:
         """
@@ -433,6 +442,9 @@ class AsyncRawImagesClient:
         feed training. The file must be a processed image. All-or-nothing: one
         bad entry rejects the whole request.
 
+        Masks saved with a job_execution_id are deleted when that execution is
+        reverted. In a job script, saves default to the running job's execution.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -440,6 +452,9 @@ class AsyncRawImagesClient:
         file_id : str
 
         annotations : typing.Sequence[SaveAnnotationSchema]
+
+        job_execution_id : typing.Optional[str]
+            The job execution producing the masks, so reverting it deletes them. A job script's saves default to the running job's execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -456,6 +471,7 @@ class AsyncRawImagesClient:
                 "annotations": convert_and_respect_annotation_metadata(
                     object_=annotations, annotation=typing.Sequence[SaveAnnotationSchema], direction="write"
                 ),
+                "job_execution_id": job_execution_id,
             },
             headers={
                 "content-type": "application/json",

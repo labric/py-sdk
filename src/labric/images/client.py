@@ -71,6 +71,7 @@ class ImagesClient:
         file_id: str,
         *,
         annotations: typing.Sequence[SaveAnnotationSchema],
+        job_execution_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[AnnotationSchema]:
         """
@@ -86,6 +87,9 @@ class ImagesClient:
         feed training. The file must be a processed image. All-or-nothing: one
         bad entry rejects the whole request.
 
+        Masks saved with a job_execution_id are deleted when that execution is
+        reverted. In a job script, saves default to the running job's execution.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -93,6 +97,9 @@ class ImagesClient:
         file_id : str
 
         annotations : typing.Sequence[SaveAnnotationSchema]
+
+        job_execution_id : typing.Optional[str]
+            The job execution producing the masks, so reverting it deletes them. A job script's saves default to the running job's execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -119,7 +126,9 @@ class ImagesClient:
             ],
         )
         """
-        _response = self._raw_client.annotate(file_id, annotations=annotations, request_options=request_options)
+        _response = self._raw_client.annotate(
+            file_id, annotations=annotations, job_execution_id=job_execution_id, request_options=request_options
+        )
         return _response.data
 
 
@@ -190,6 +199,7 @@ class AsyncImagesClient:
         file_id: str,
         *,
         annotations: typing.Sequence[SaveAnnotationSchema],
+        job_execution_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[AnnotationSchema]:
         """
@@ -205,6 +215,9 @@ class AsyncImagesClient:
         feed training. The file must be a processed image. All-or-nothing: one
         bad entry rejects the whole request.
 
+        Masks saved with a job_execution_id are deleted when that execution is
+        reverted. In a job script, saves default to the running job's execution.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -212,6 +225,9 @@ class AsyncImagesClient:
         file_id : str
 
         annotations : typing.Sequence[SaveAnnotationSchema]
+
+        job_execution_id : typing.Optional[str]
+            The job execution producing the masks, so reverting it deletes them. A job script's saves default to the running job's execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -246,5 +262,7 @@ class AsyncImagesClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.annotate(file_id, annotations=annotations, request_options=request_options)
+        _response = await self._raw_client.annotate(
+            file_id, annotations=annotations, job_execution_id=job_execution_id, request_options=request_options
+        )
         return _response.data
