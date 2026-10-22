@@ -266,8 +266,8 @@ class FilesClient:
         Fetch a source file's content for inspecting raw instrument output.
 
         Returns a presigned download URL plus a best-effort UTF-8 text preview of
-        the start of the file. Large files return a URL only (no inline preview);
-        fetch the full bytes via the URL when needed.
+        the first 64 KiB of the file, regardless of total size. Fetch the full bytes
+        via the URL when needed.
 
         Requires an API key with the `read` scope.
 
@@ -581,8 +581,8 @@ class AsyncFilesClient:
         Fetch a source file's content for inspecting raw instrument output.
 
         Returns a presigned download URL plus a best-effort UTF-8 text preview of
-        the start of the file. Large files return a URL only (no inline preview);
-        fetch the full bytes via the URL when needed.
+        the first 64 KiB of the file, regardless of total size. Fetch the full bytes
+        via the URL when needed.
 
         Requires an API key with the `read` scope.
 

@@ -31,7 +31,7 @@ class FileContentSchema(UniversalBaseModel):
 
     preview_skipped_reason: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Why an inline preview was not returned (e.g. file too large).
+    Why an inline preview was not returned (e.g. a storage read failed).
     """
 
     if IS_PYDANTIC_V2:
