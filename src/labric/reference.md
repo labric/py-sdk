@@ -1195,7 +1195,7 @@ client.jobs.update(
 <dl>
 <dd>
 
-**publish_status:** `typing.Optional[PublishStatus]` — draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+**publish_status:** `typing.Optional[PublishStatus]` — draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
     
 </dd>
 </dl>

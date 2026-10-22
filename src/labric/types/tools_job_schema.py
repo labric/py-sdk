@@ -24,7 +24,7 @@ class ToolsJobSchema(UniversalBaseModel):
     archived: bool
     publish_status: PublishStatus = pydantic.Field()
     """
-    draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+    draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
     """
 
     trigger: typing.Optional[JobTriggerSchema] = None

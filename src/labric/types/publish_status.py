@@ -2,4 +2,4 @@
 
 import typing
 
-PublishStatus = typing.Union[typing.Literal["draft", "published"], typing.Any]
+PublishStatus = typing.Union[typing.Literal["draft", "in_review", "published"], typing.Any]

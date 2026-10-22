@@ -222,7 +222,7 @@ class JobsClient:
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
         publish_status : typing.Optional[PublishStatus]
-            draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+            draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -613,7 +613,7 @@ class AsyncJobsClient:
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
         publish_status : typing.Optional[PublishStatus]
-            draft while the job is still being worked on; published once it is ready for others to rely on. New jobs start as draft.
+            draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
