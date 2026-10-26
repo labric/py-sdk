@@ -13,6 +13,10 @@ class DeviceStatusSchema(UniversalBaseModel):
     first_seen: dt.datetime
     last_seen: dt.datetime
     app_version: typing.Optional[str] = None
+    is_watching: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether Sync was watching a folder, or null if it did not report it
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

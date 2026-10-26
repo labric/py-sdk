@@ -41,7 +41,9 @@ class RawInstrumentsClient:
 
         Returns the current status of the instrument's paired device and the periods
         it was online, offline, or in error, trimmed to the range and oldest first.
-        Gaps between the device's reports are returned as offline periods.
+        Gaps between the device's reports are returned as offline periods. An online
+        period with is_watching false means Sync was running but not watching a
+        folder, so it uploaded no files. Null means Sync did not report it.
         current_status gives the status now and when it began, or is null if the
         device has never reported; it is offline since the last heartbeat once the
         device stops sending heartbeats. Use it to answer questions about connectivity
@@ -182,7 +184,9 @@ class AsyncRawInstrumentsClient:
 
         Returns the current status of the instrument's paired device and the periods
         it was online, offline, or in error, trimmed to the range and oldest first.
-        Gaps between the device's reports are returned as offline periods.
+        Gaps between the device's reports are returned as offline periods. An online
+        period with is_watching false means Sync was running but not watching a
+        folder, so it uploaded no files. Null means Sync did not report it.
         current_status gives the status now and when it began, or is null if the
         device has never reported; it is offline since the last heartbeat once the
         device stops sending heartbeats. Use it to answer questions about connectivity
