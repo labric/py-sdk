@@ -10,6 +10,7 @@ class JobTriggerSchema(UniversalBaseModel):
     id: str
     category: str
     instrument_id: typing.Optional[str] = None
+    instrument_name: typing.Optional[str] = None
     conditions: typing.Optional[typing.Dict[str, typing.Any]] = None
 
     if IS_PYDANTIC_V2:
