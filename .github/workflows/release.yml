@@ -10,7 +10,7 @@ jobs:
     environment: pypi
     permissions:
       id-token: write
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -30,3 +30,15 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      # Watchers subscribed to releases get an email for each one. The notes
+      # carry the regeneration commit message, which links the labric-web
+      # change that produced this version.
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="$(git log -1 --format=%b)
+
+          https://pypi.org/project/labric/${GITHUB_REF_NAME#v}/"
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "$notes"
