@@ -25,7 +25,10 @@ from ..types.ml_problem_type import MlProblemType
 from ..types.predict_response_schema import PredictResponseSchema
 from ..types.quality_preset import QualityPreset
 from ..types.tools_ml_model_detail_schema import ToolsMlModelDetailSchema
+from ..types.tools_ml_model_detail_with_log_summary_schema import ToolsMlModelDetailWithLogSummarySchema
+from ..types.training_log_schema import TrainingLogSchema
 from ..types.validation_error_schema import ValidationErrorSchema
+from .types.get_training_log_models_request_streams_item import GetTrainingLogModelsRequestStreamsItem
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -213,9 +216,14 @@ class RawModelsClient:
 
     def get(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[ToolsMlModelDetailSchema]:
+    ) -> HttpResponse[ToolsMlModelDetailWithLogSummarySchema]:
         """
         Get one ML model's training status and results.
+
+        Once the newest version's training job ends, training_log_summary describes
+        the run: how the job exited, how long each phase took, dataset facts such as
+        the size of the holdout split, the final exception, and the most frequent
+        warnings. Read the job's output with get_ml_model_training_log.
 
         Requires an API key with the `read` scope.
 
@@ -228,7 +236,7 @@ class RawModelsClient:
 
         Returns
         -------
-        HttpResponse[ToolsMlModelDetailSchema]
+        HttpResponse[ToolsMlModelDetailWithLogSummarySchema]
             OK
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -239,9 +247,156 @@ class RawModelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ToolsMlModelDetailSchema,
+                    ToolsMlModelDetailWithLogSummarySchema,
                     parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
+                        type_=ToolsMlModelDetailWithLogSummarySchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_training_log(
+        self,
+        ml_model_id: str,
+        *,
+        version_number: typing.Optional[int] = None,
+        tail: typing.Optional[int] = None,
+        streams: typing.Optional[
+            typing.Union[
+                GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]
+            ]
+        ] = None,
+        search: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[TrainingLogSchema]:
+        """
+        Read the output of an ML model's training job, oldest line first.
+
+        Reads the newest version unless version_number names another. Returns the
+        last tail lines that match streams and search, with the version's status and
+        training_log_summary, which is null until the job ends. To find problems in a
+        long log, filter to the warning and error streams or search for a term
+        first. A running job uploads its output about every 30 seconds. The log keeps
+        the job's last 5,000 lines. It is empty before the job starts, and for
+        versions trained before training logs were saved.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        version_number : typing.Optional[int]
+            The version to read. Defaults to the newest version.
+
+        tail : typing.Optional[int]
+            How many of the last matching lines to return.
+
+        streams : typing.Optional[typing.Union[GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]]]
+            Keep only lines from these streams, e.g. warning and error.
+
+        search : typing.Optional[str]
+            Keep only lines that contain this text, ignoring case.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[TrainingLogSchema]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"api/v1/ml-models/{encode_path_param(ml_model_id)}/training-log",
+            method="GET",
+            params={
+                "version_number": version_number,
+                "tail": tail,
+                "streams": streams,
+                "search": search,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    TrainingLogSchema,
+                    parse_obj_as(
+                        type_=TrainingLogSchema,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -904,9 +1059,14 @@ class AsyncRawModelsClient:
 
     async def get(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[ToolsMlModelDetailSchema]:
+    ) -> AsyncHttpResponse[ToolsMlModelDetailWithLogSummarySchema]:
         """
         Get one ML model's training status and results.
+
+        Once the newest version's training job ends, training_log_summary describes
+        the run: how the job exited, how long each phase took, dataset facts such as
+        the size of the holdout split, the final exception, and the most frequent
+        warnings. Read the job's output with get_ml_model_training_log.
 
         Requires an API key with the `read` scope.
 
@@ -919,7 +1079,7 @@ class AsyncRawModelsClient:
 
         Returns
         -------
-        AsyncHttpResponse[ToolsMlModelDetailSchema]
+        AsyncHttpResponse[ToolsMlModelDetailWithLogSummarySchema]
             OK
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -930,9 +1090,156 @@ class AsyncRawModelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ToolsMlModelDetailSchema,
+                    ToolsMlModelDetailWithLogSummarySchema,
                     parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
+                        type_=ToolsMlModelDetailWithLogSummarySchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_training_log(
+        self,
+        ml_model_id: str,
+        *,
+        version_number: typing.Optional[int] = None,
+        tail: typing.Optional[int] = None,
+        streams: typing.Optional[
+            typing.Union[
+                GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]
+            ]
+        ] = None,
+        search: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[TrainingLogSchema]:
+        """
+        Read the output of an ML model's training job, oldest line first.
+
+        Reads the newest version unless version_number names another. Returns the
+        last tail lines that match streams and search, with the version's status and
+        training_log_summary, which is null until the job ends. To find problems in a
+        long log, filter to the warning and error streams or search for a term
+        first. A running job uploads its output about every 30 seconds. The log keeps
+        the job's last 5,000 lines. It is empty before the job starts, and for
+        versions trained before training logs were saved.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        version_number : typing.Optional[int]
+            The version to read. Defaults to the newest version.
+
+        tail : typing.Optional[int]
+            How many of the last matching lines to return.
+
+        streams : typing.Optional[typing.Union[GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]]]
+            Keep only lines from these streams, e.g. warning and error.
+
+        search : typing.Optional[str]
+            Keep only lines that contain this text, ignoring case.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[TrainingLogSchema]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"api/v1/ml-models/{encode_path_param(ml_model_id)}/training-log",
+            method="GET",
+            params={
+                "version_number": version_number,
+                "tail": tail,
+                "streams": streams,
+                "search": search,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    TrainingLogSchema,
+                    parse_obj_as(
+                        type_=TrainingLogSchema,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

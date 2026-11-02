@@ -9,7 +9,10 @@ from ..types.ml_problem_type import MlProblemType
 from ..types.predict_response_schema import PredictResponseSchema
 from ..types.quality_preset import QualityPreset
 from ..types.tools_ml_model_detail_schema import ToolsMlModelDetailSchema
+from ..types.tools_ml_model_detail_with_log_summary_schema import ToolsMlModelDetailWithLogSummarySchema
+from ..types.training_log_schema import TrainingLogSchema
 from .raw_client import AsyncRawModelsClient, RawModelsClient
+from .types.get_training_log_models_request_streams_item import GetTrainingLogModelsRequestStreamsItem
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -105,9 +108,14 @@ class ModelsClient:
 
     def get(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> ToolsMlModelDetailSchema:
+    ) -> ToolsMlModelDetailWithLogSummarySchema:
         """
         Get one ML model's training status and results.
+
+        Once the newest version's training job ends, training_log_summary describes
+        the run: how the job exited, how long each phase took, dataset facts such as
+        the size of the holdout split, the final exception, and the most frequent
+        warnings. Read the job's output with get_ml_model_training_log.
 
         Requires an API key with the `read` scope.
 
@@ -120,7 +128,7 @@ class ModelsClient:
 
         Returns
         -------
-        ToolsMlModelDetailSchema
+        ToolsMlModelDetailWithLogSummarySchema
             OK
 
         Examples
@@ -135,6 +143,78 @@ class ModelsClient:
         )
         """
         _response = self._raw_client.get(ml_model_id, request_options=request_options)
+        return _response.data
+
+    def get_training_log(
+        self,
+        ml_model_id: str,
+        *,
+        version_number: typing.Optional[int] = None,
+        tail: typing.Optional[int] = None,
+        streams: typing.Optional[
+            typing.Union[
+                GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]
+            ]
+        ] = None,
+        search: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> TrainingLogSchema:
+        """
+        Read the output of an ML model's training job, oldest line first.
+
+        Reads the newest version unless version_number names another. Returns the
+        last tail lines that match streams and search, with the version's status and
+        training_log_summary, which is null until the job ends. To find problems in a
+        long log, filter to the warning and error streams or search for a term
+        first. A running job uploads its output about every 30 seconds. The log keeps
+        the job's last 5,000 lines. It is empty before the job starts, and for
+        versions trained before training logs were saved.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        version_number : typing.Optional[int]
+            The version to read. Defaults to the newest version.
+
+        tail : typing.Optional[int]
+            How many of the last matching lines to return.
+
+        streams : typing.Optional[typing.Union[GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]]]
+            Keep only lines from these streams, e.g. warning and error.
+
+        search : typing.Optional[str]
+            Keep only lines that contain this text, ignoring case.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        TrainingLogSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.models.get_training_log(
+            ml_model_id="ml_model_id",
+        )
+        """
+        _response = self._raw_client.get_training_log(
+            ml_model_id,
+            version_number=version_number,
+            tail=tail,
+            streams=streams,
+            search=search,
+            request_options=request_options,
+        )
         return _response.data
 
     def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[ToolsMlModelDetailSchema]:
@@ -391,9 +471,14 @@ class AsyncModelsClient:
 
     async def get(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> ToolsMlModelDetailSchema:
+    ) -> ToolsMlModelDetailWithLogSummarySchema:
         """
         Get one ML model's training status and results.
+
+        Once the newest version's training job ends, training_log_summary describes
+        the run: how the job exited, how long each phase took, dataset facts such as
+        the size of the holdout split, the final exception, and the most frequent
+        warnings. Read the job's output with get_ml_model_training_log.
 
         Requires an API key with the `read` scope.
 
@@ -406,7 +491,7 @@ class AsyncModelsClient:
 
         Returns
         -------
-        ToolsMlModelDetailSchema
+        ToolsMlModelDetailWithLogSummarySchema
             OK
 
         Examples
@@ -429,6 +514,86 @@ class AsyncModelsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(ml_model_id, request_options=request_options)
+        return _response.data
+
+    async def get_training_log(
+        self,
+        ml_model_id: str,
+        *,
+        version_number: typing.Optional[int] = None,
+        tail: typing.Optional[int] = None,
+        streams: typing.Optional[
+            typing.Union[
+                GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]
+            ]
+        ] = None,
+        search: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> TrainingLogSchema:
+        """
+        Read the output of an ML model's training job, oldest line first.
+
+        Reads the newest version unless version_number names another. Returns the
+        last tail lines that match streams and search, with the version's status and
+        training_log_summary, which is null until the job ends. To find problems in a
+        long log, filter to the warning and error streams or search for a term
+        first. A running job uploads its output about every 30 seconds. The log keeps
+        the job's last 5,000 lines. It is empty before the job starts, and for
+        versions trained before training logs were saved.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        version_number : typing.Optional[int]
+            The version to read. Defaults to the newest version.
+
+        tail : typing.Optional[int]
+            How many of the last matching lines to return.
+
+        streams : typing.Optional[typing.Union[GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]]]
+            Keep only lines from these streams, e.g. warning and error.
+
+        search : typing.Optional[str]
+            Keep only lines that contain this text, ignoring case.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        TrainingLogSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.models.get_training_log(
+                ml_model_id="ml_model_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_training_log(
+            ml_model_id,
+            version_number=version_number,
+            tail=tail,
+            streams=streams,
+            search=search,
+            request_options=request_options,
+        )
         return _response.data
 
     async def list(

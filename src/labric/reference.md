@@ -2613,7 +2613,7 @@ client.models.predict(
 </dl>
 </details>
 
-<details><summary><code>client.models.<a href="src/labric/models/client.py">get</a>(...) -> ToolsMlModelDetailSchema</code></summary>
+<details><summary><code>client.models.<a href="src/labric/models/client.py">get</a>(...) -> ToolsMlModelDetailWithLogSummarySchema</code></summary>
 <dl>
 <dd>
 
@@ -2626,6 +2626,11 @@ client.models.predict(
 <dd>
 
 Get one ML model's training status and results.
+
+Once the newest version's training job ends, training_log_summary describes
+the run: how the job exited, how long each phase took, dataset facts such as
+the size of the holdout split, the final exception, and the most frequent
+warnings. Read the job's output with get_ml_model_training_log.
 
 Requires an API key with the `read` scope.
 </dd>
@@ -2669,6 +2674,121 @@ client.models.get(
 <dd>
 
 **ml_model_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.models.<a href="src/labric/models/client.py">get_training_log</a>(...) -> TrainingLogSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Read the output of an ML model's training job, oldest line first.
+
+Reads the newest version unless version_number names another. Returns the
+last tail lines that match streams and search, with the version's status and
+training_log_summary, which is null until the job ends. To find problems in a
+long log, filter to the warning and error streams or search for a term
+first. A running job uploads its output about every 30 seconds. The log keeps
+the job's last 5,000 lines. It is empty before the job starts, and for
+versions trained before training logs were saved.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.models.get_training_log(
+    ml_model_id="ml_model_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ml_model_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_number:** `typing.Optional[int]` — The version to read. Defaults to the newest version.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tail:** `typing.Optional[int]` — How many of the last matching lines to return.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**streams:** `typing.Optional[typing.Union[GetTrainingLogModelsRequestStreamsItem, typing.Sequence[GetTrainingLogModelsRequestStreamsItem]]]` — Keep only lines from these streams, e.g. warning and error.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `typing.Optional[str]` — Keep only lines that contain this text, ignoring case.
     
 </dd>
 </dl>

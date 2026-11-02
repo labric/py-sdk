@@ -59,6 +59,13 @@ if typing.TYPE_CHECKING:
     from .table_write_result import TableWriteResult
     from .tools_job_schema import ToolsJobSchema
     from .tools_ml_model_detail_schema import ToolsMlModelDetailSchema
+    from .tools_ml_model_detail_with_log_summary_schema import ToolsMlModelDetailWithLogSummarySchema
+    from .training_log_line_schema import TrainingLogLineSchema
+    from .training_log_line_schema_stream import TrainingLogLineSchemaStream
+    from .training_log_schema import TrainingLogSchema
+    from .training_log_summary_schema import TrainingLogSummarySchema
+    from .training_phase_schema import TrainingPhaseSchema
+    from .training_warning_schema import TrainingWarningSchema
     from .validation_error_schema import ValidationErrorSchema
     from .write_data_error_response import WriteDataErrorResponse
     from .write_data_problem import WriteDataProblem
@@ -118,6 +125,13 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TableWriteResult": ".table_write_result",
     "ToolsJobSchema": ".tools_job_schema",
     "ToolsMlModelDetailSchema": ".tools_ml_model_detail_schema",
+    "ToolsMlModelDetailWithLogSummarySchema": ".tools_ml_model_detail_with_log_summary_schema",
+    "TrainingLogLineSchema": ".training_log_line_schema",
+    "TrainingLogLineSchemaStream": ".training_log_line_schema_stream",
+    "TrainingLogSchema": ".training_log_schema",
+    "TrainingLogSummarySchema": ".training_log_summary_schema",
+    "TrainingPhaseSchema": ".training_phase_schema",
+    "TrainingWarningSchema": ".training_warning_schema",
     "ValidationErrorSchema": ".validation_error_schema",
     "WriteDataErrorResponse": ".write_data_error_response",
     "WriteDataProblem": ".write_data_problem",
@@ -201,6 +215,13 @@ __all__ = [
     "TableWriteResult",
     "ToolsJobSchema",
     "ToolsMlModelDetailSchema",
+    "ToolsMlModelDetailWithLogSummarySchema",
+    "TrainingLogLineSchema",
+    "TrainingLogLineSchemaStream",
+    "TrainingLogSchema",
+    "TrainingLogSummarySchema",
+    "TrainingPhaseSchema",
+    "TrainingWarningSchema",
     "ValidationErrorSchema",
     "WriteDataErrorResponse",
     "WriteDataProblem",
