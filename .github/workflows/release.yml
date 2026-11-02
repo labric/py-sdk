@@ -29,7 +29,24 @@ jobs:
         run: uv build
 
       - name: Publish to PyPI
+        id: publish
+        continue-on-error: true
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      # Sigstore and PyPI sometimes return transient 5xx errors. The publish
+      # action refuses to run when attestations from a failed attempt remain,
+      # and skip-existing covers a file the first attempt already uploaded.
+      - name: Prepare to retry the publish
+        if: steps.publish.outcome == 'failure'
+        run: |
+          rm -f dist/*.publish.attestation
+          sleep 60
+
+      - name: Retry publishing to PyPI
+        if: steps.publish.outcome == 'failure'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
 
       - name: Create GitHub release
         env:
