@@ -7,6 +7,7 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from .types import (
+        AccessLevel,
         ActivityActorSchema,
         AgentRunEvent,
         AgentRunRequest,
@@ -19,6 +20,10 @@ if typing.TYPE_CHECKING:
         BatchWriteResponse,
         CurrentDeviceStatusSchema,
         CurrentDeviceStatusSchemaValue,
+        DashboardItemCategory,
+        DashboardItemSchema,
+        DashboardSchema,
+        DatasetSchema,
         DeviceStatusHistorySchema,
         DeviceStatusSchema,
         DeviceStatusSchemaStatus,
@@ -67,7 +72,9 @@ if typing.TYPE_CHECKING:
         TrainingLogSummarySchema,
         TrainingPhaseSchema,
         TrainingWarningSchema,
+        UserSchema,
         ValidationErrorSchema,
+        VisualizationSchema,
         WriteDataErrorResponse,
         WriteDataProblem,
         WriteDataResponse,
@@ -85,7 +92,20 @@ if typing.TYPE_CHECKING:
         UnauthorizedError,
         UnprocessableEntityError,
     )
-    from . import agent, data, files, images, instruments, jobs, models, notifications, tools
+    from . import (
+        agent,
+        dashboards,
+        data,
+        datasets,
+        files,
+        images,
+        instruments,
+        jobs,
+        models,
+        notifications,
+        tools,
+        visualizations,
+    )
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
     from .client import AsyncLabric, Labric
     from .environment import LabricEnvironment
@@ -98,6 +118,7 @@ if typing.TYPE_CHECKING:
         LabricWriteSchemaTargetType,
     )
 _dynamic_imports: typing.Dict[str, str] = {
+    "AccessLevel": ".types",
     "ActivityActorSchema": ".types",
     "AgentRunEvent": ".types",
     "AgentRunRequest": ".types",
@@ -114,6 +135,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConflictError": ".errors",
     "CurrentDeviceStatusSchema": ".types",
     "CurrentDeviceStatusSchemaValue": ".types",
+    "DashboardItemCategory": ".types",
+    "DashboardItemSchema": ".types",
+    "DashboardSchema": ".types",
+    "DatasetSchema": ".types",
     "DefaultAioHttpClient": "._default_clients",
     "DefaultAsyncHttpxClient": "._default_clients",
     "DeviceStatusHistorySchema": ".types",
@@ -179,13 +204,17 @@ _dynamic_imports: typing.Dict[str, str] = {
     "UnauthorizedError": ".errors",
     "UnprocessableEntityError": ".errors",
     "UpdateJobExecutionStatusSchemaStatus": ".jobs",
+    "UserSchema": ".types",
     "ValidationErrorSchema": ".types",
+    "VisualizationSchema": ".types",
     "WriteDataErrorResponse": ".types",
     "WriteDataProblem": ".types",
     "WriteDataResponse": ".types",
     "WritePlan": ".types",
     "agent": ".agent",
+    "dashboards": ".dashboards",
     "data": ".data",
+    "datasets": ".datasets",
     "files": ".files",
     "images": ".images",
     "instruments": ".instruments",
@@ -193,6 +222,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "models": ".models",
     "notifications": ".notifications",
     "tools": ".tools",
+    "visualizations": ".visualizations",
 }
 
 
@@ -218,6 +248,7 @@ def __dir__():
 
 
 __all__ = [
+    "AccessLevel",
     "ActivityActorSchema",
     "AgentRunEvent",
     "AgentRunRequest",
@@ -234,6 +265,10 @@ __all__ = [
     "ConflictError",
     "CurrentDeviceStatusSchema",
     "CurrentDeviceStatusSchemaValue",
+    "DashboardItemCategory",
+    "DashboardItemSchema",
+    "DashboardSchema",
+    "DatasetSchema",
     "DefaultAioHttpClient",
     "DefaultAsyncHttpxClient",
     "DeviceStatusHistorySchema",
@@ -299,13 +334,17 @@ __all__ = [
     "UnauthorizedError",
     "UnprocessableEntityError",
     "UpdateJobExecutionStatusSchemaStatus",
+    "UserSchema",
     "ValidationErrorSchema",
+    "VisualizationSchema",
     "WriteDataErrorResponse",
     "WriteDataProblem",
     "WriteDataResponse",
     "WritePlan",
     "agent",
+    "dashboards",
     "data",
+    "datasets",
     "files",
     "images",
     "instruments",
@@ -313,4 +352,5 @@ __all__ = [
     "models",
     "notifications",
     "tools",
+    "visualizations",
 ]

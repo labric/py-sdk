@@ -13,7 +13,9 @@ from .environment import LabricEnvironment
 
 if typing.TYPE_CHECKING:
     from .agent.client import AgentClient, AsyncAgentClient
+    from .dashboards.client import AsyncDashboardsClient, DashboardsClient
     from .data.client import AsyncDataClient, DataClient
+    from .datasets.client import AsyncDatasetsClient, DatasetsClient
     from .files.client import AsyncFilesClient, FilesClient
     from .images.client import AsyncImagesClient, ImagesClient
     from .instruments.client import AsyncInstrumentsClient, InstrumentsClient
@@ -21,6 +23,7 @@ if typing.TYPE_CHECKING:
     from .models.client import AsyncModelsClient, ModelsClient
     from .notifications.client import AsyncNotificationsClient, NotificationsClient
     from .tools.client import AsyncToolsClient, ToolsClient
+    from .visualizations.client import AsyncVisualizationsClient, VisualizationsClient
 
 
 class BaseLabric:
@@ -115,9 +118,12 @@ class BaseLabric:
         self._files: typing.Optional[FilesClient] = None
         self._agent: typing.Optional[AgentClient] = None
         self._jobs: typing.Optional[JobsClient] = None
+        self._visualizations: typing.Optional[VisualizationsClient] = None
+        self._datasets: typing.Optional[DatasetsClient] = None
         self._tools: typing.Optional[ToolsClient] = None
         self._images: typing.Optional[ImagesClient] = None
         self._data: typing.Optional[DataClient] = None
+        self._dashboards: typing.Optional[DashboardsClient] = None
         self._notifications: typing.Optional[NotificationsClient] = None
         self._models: typing.Optional[ModelsClient] = None
 
@@ -154,6 +160,22 @@ class BaseLabric:
         return self._jobs
 
     @property
+    def visualizations(self):
+        if self._visualizations is None:
+            from .visualizations.client import VisualizationsClient  # noqa: E402
+
+            self._visualizations = VisualizationsClient(client_wrapper=self._client_wrapper)
+        return self._visualizations
+
+    @property
+    def datasets(self):
+        if self._datasets is None:
+            from .datasets.client import DatasetsClient  # noqa: E402
+
+            self._datasets = DatasetsClient(client_wrapper=self._client_wrapper)
+        return self._datasets
+
+    @property
     def tools(self):
         if self._tools is None:
             from .tools.client import ToolsClient  # noqa: E402
@@ -176,6 +198,14 @@ class BaseLabric:
 
             self._data = DataClient(client_wrapper=self._client_wrapper)
         return self._data
+
+    @property
+    def dashboards(self):
+        if self._dashboards is None:
+            from .dashboards.client import DashboardsClient  # noqa: E402
+
+            self._dashboards = DashboardsClient(client_wrapper=self._client_wrapper)
+        return self._dashboards
 
     @property
     def notifications(self):
@@ -307,9 +337,12 @@ class AsyncBaseLabric:
         self._files: typing.Optional[AsyncFilesClient] = None
         self._agent: typing.Optional[AsyncAgentClient] = None
         self._jobs: typing.Optional[AsyncJobsClient] = None
+        self._visualizations: typing.Optional[AsyncVisualizationsClient] = None
+        self._datasets: typing.Optional[AsyncDatasetsClient] = None
         self._tools: typing.Optional[AsyncToolsClient] = None
         self._images: typing.Optional[AsyncImagesClient] = None
         self._data: typing.Optional[AsyncDataClient] = None
+        self._dashboards: typing.Optional[AsyncDashboardsClient] = None
         self._notifications: typing.Optional[AsyncNotificationsClient] = None
         self._models: typing.Optional[AsyncModelsClient] = None
 
@@ -346,6 +379,22 @@ class AsyncBaseLabric:
         return self._jobs
 
     @property
+    def visualizations(self):
+        if self._visualizations is None:
+            from .visualizations.client import AsyncVisualizationsClient  # noqa: E402
+
+            self._visualizations = AsyncVisualizationsClient(client_wrapper=self._client_wrapper)
+        return self._visualizations
+
+    @property
+    def datasets(self):
+        if self._datasets is None:
+            from .datasets.client import AsyncDatasetsClient  # noqa: E402
+
+            self._datasets = AsyncDatasetsClient(client_wrapper=self._client_wrapper)
+        return self._datasets
+
+    @property
     def tools(self):
         if self._tools is None:
             from .tools.client import AsyncToolsClient  # noqa: E402
@@ -368,6 +417,14 @@ class AsyncBaseLabric:
 
             self._data = AsyncDataClient(client_wrapper=self._client_wrapper)
         return self._data
+
+    @property
+    def dashboards(self):
+        if self._dashboards is None:
+            from .dashboards.client import AsyncDashboardsClient  # noqa: E402
+
+            self._dashboards = AsyncDashboardsClient(client_wrapper=self._client_wrapper)
+        return self._dashboards
 
     @property
     def notifications(self):

@@ -1480,6 +1480,239 @@ client.jobs.revert(
 </dl>
 </details>
 
+## visualizations
+<details><summary><code>client.visualizations.<a href="src/labric/visualizations/client.py">update</a>(...) -> VisualizationSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Requires edit access to the visualization.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.visualizations.update(
+    visualization_id="visualization_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**visualization_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — New name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — New description, or null to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**publish_status:** `typing.Optional[PublishStatus]` — New publish status. Authors may submit their own drafts for review. Any other change requires an organization admin.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**dataset_id:** `typing.Optional[str]` — ID of the dataset the visualization plots.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**specification:** `typing.Optional[typing.Dict[str, typing.Any]]` — New chart specification. It replaces the saved one whole.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## datasets
+<details><summary><code>client.datasets.<a href="src/labric/datasets/client.py">update</a>(...) -> DatasetSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Requires edit access to the dataset. Visualizations built on the
+dataset plot the new query the next time they load.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.datasets.update(
+    dataset_id="dataset_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**dataset_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — New name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — New description, or null to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**publish_status:** `typing.Optional[PublishStatus]` — New publish status. Authors may submit their own drafts for review. Any other change requires an organization admin.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `typing.Optional[str]` — New SQL query: a single read-only SELECT statement. Reference parameters as :name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**default_parameters:** `typing.Optional[typing.Dict[str, typing.Any]]` — Default values for the query's parameters, keyed by name. They replace the saved defaults whole.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## tools
 <details><summary><code>client.tools.<a href="src/labric/tools/client.py">write</a>(...) -> typing.List[typing.Dict[str, typing.Any]]</code></summary>
 <dl>
@@ -2357,6 +2590,106 @@ client.data.write()
 <dd>
 
 **return_rows:** `typing.Optional[bool]` — Include the written rows of each table write in its result.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## dashboards
+<details><summary><code>client.dashboards.<a href="src/labric/dashboards/client.py">update</a>(...) -> DashboardSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Requires edit access to the dashboard.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.dashboards.update(
+    dashboard_id="dashboard_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**dashboard_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — New name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — New description, or null to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**publish_status:** `typing.Optional[PublishStatus]` — New publish status. Authors may submit their own drafts for review. Any other change requires an organization admin.
     
 </dd>
 </dl>
