@@ -110,6 +110,10 @@ class FilesClient:
         cannot reach, which attaches the file to that instrument so instrument
         triggers and parsers pick it up.
 
+        An upload to an instrument path that holds an API-uploaded file replaces
+        that file's contents. Triggers and parsers are notified again unless the
+        contents are unchanged. A path the Sync app uploaded returns a 409.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -161,9 +165,12 @@ class FilesClient:
         make the file visible. The URL only creates the object, never replaces one,
         and refuses bodies over 500 MB. Asking again for an instrument path whose
         upload was never confirmed returns a fresh URL for the same file, so a
-        failed PUT can be retried. The SDK's files.upload() runs all three steps;
-        the [Upload files](https://docs.labric.co/upload-files) guide shows them
-        with curl.
+        failed PUT can be retried. Asking for an instrument path that holds an
+        API-uploaded file returns a URL for new contents, which replace the file's
+        contents on confirmation. A path the Sync app uploaded returns a 409. The
+        SDK's files.upload() runs all three steps; the
+        [Upload files](https://docs.labric.co/upload-files) guide shows them with
+        curl.
 
         At least one of job_execution_id and instrument_id is required, except
         in a job script, whose uploads default to the running job's execution.
@@ -226,10 +233,12 @@ class FilesClient:
         Records the stored file's size and checksum, makes the file visible in
         listings, and notifies triggers and parsers. Files over 500 MB and native
         executables are discarded with a 400, as the one-request upload rejects
-        them. Confirming a file that is already confirmed returns its record again
-        without notifying anyone twice. The
-        [Upload files](https://docs.labric.co/upload-files) guide shows the full
-        sequence.
+        them. Confirming new contents for an API-uploaded file replaces its
+        contents and notifies triggers and parsers again, unless the contents are
+        unchanged. Rejected contents leave the file as it was. Confirming a file
+        that is already confirmed returns its record again without notifying anyone
+        twice. The [Upload files](https://docs.labric.co/upload-files) guide shows
+        the full sequence.
 
         Requires an API key with the `write` scope.
 
@@ -401,6 +410,10 @@ class AsyncFilesClient:
         cannot reach, which attaches the file to that instrument so instrument
         triggers and parsers pick it up.
 
+        An upload to an instrument path that holds an API-uploaded file replaces
+        that file's contents. Triggers and parsers are notified again unless the
+        contents are unchanged. A path the Sync app uploaded returns a 409.
+
         Requires an API key with the `write` scope.
 
         Parameters
@@ -460,9 +473,12 @@ class AsyncFilesClient:
         make the file visible. The URL only creates the object, never replaces one,
         and refuses bodies over 500 MB. Asking again for an instrument path whose
         upload was never confirmed returns a fresh URL for the same file, so a
-        failed PUT can be retried. The SDK's files.upload() runs all three steps;
-        the [Upload files](https://docs.labric.co/upload-files) guide shows them
-        with curl.
+        failed PUT can be retried. Asking for an instrument path that holds an
+        API-uploaded file returns a URL for new contents, which replace the file's
+        contents on confirmation. A path the Sync app uploaded returns a 409. The
+        SDK's files.upload() runs all three steps; the
+        [Upload files](https://docs.labric.co/upload-files) guide shows them with
+        curl.
 
         At least one of job_execution_id and instrument_id is required, except
         in a job script, whose uploads default to the running job's execution.
@@ -533,10 +549,12 @@ class AsyncFilesClient:
         Records the stored file's size and checksum, makes the file visible in
         listings, and notifies triggers and parsers. Files over 500 MB and native
         executables are discarded with a 400, as the one-request upload rejects
-        them. Confirming a file that is already confirmed returns its record again
-        without notifying anyone twice. The
-        [Upload files](https://docs.labric.co/upload-files) guide shows the full
-        sequence.
+        them. Confirming new contents for an API-uploaded file replaces its
+        contents and notifies triggers and parsers again, unless the contents are
+        unchanged. Rejected contents leave the file as it was. Confirming a file
+        that is already confirmed returns its record again without notifying anyone
+        twice. The [Upload files](https://docs.labric.co/upload-files) guide shows
+        the full sequence.
 
         Requires an API key with the `write` scope.
 
