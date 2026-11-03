@@ -27,6 +27,148 @@ class VisualizationsClient:
         """
         return self._raw_client
 
+    def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[VisualizationSchema]:
+        """
+        Lists the organization's visualizations, filtered by publish status or
+        author if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[VisualizationSchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.visualizations.list()
+        """
+        _response = self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    def create(
+        self,
+        *,
+        name: str,
+        specification: typing.Dict[str, typing.Any],
+        description: typing.Optional[str] = OMIT,
+        dataset_id: typing.Optional[str] = OMIT,
+        query: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> VisualizationSchema:
+        """
+        Creates a visualization. Rejects a specification that fails to build a
+        chart from the data. If a visualization draws the same chart from the same
+        data, returns it instead, regardless of name and labels.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's visualizations.
+
+        specification : typing.Dict[str, typing.Any]
+            Chart specification. It needs a chart_type: line, bar, scatter, box, or violin with traces, a list of {x_field, y_field, title?, group_by?, group_label?}; image with image_field and an optional caption_field; cube with x_field, y_field, channel_field, and intensity_field; big_number with value_field and optional aggregation, unit, and decimal_places; or sankey with stage_fields, two or more columns in stage order, and an optional value_field. Optional title, x_label, and y_label label the chart. Every field must be a column the data returns.
+
+        description : typing.Optional[str]
+            Description shown with the chart.
+
+        dataset_id : typing.Optional[str]
+            ID of a saved dataset to plot.
+
+        query : typing.Optional[str]
+            SQL query: a single read-only SELECT statement. Reference parameters as :name. The query is saved as a dataset named after the visualization, unless a dataset with the same query and default parameters exists.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses. Only used with query.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        VisualizationSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.visualizations.create(
+            name="name",
+            specification={"key": "value"},
+        )
+        """
+        _response = self._raw_client.create(
+            name=name,
+            specification=specification,
+            description=description,
+            dataset_id=dataset_id,
+            query=query,
+            default_parameters=default_parameters,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> VisualizationSchema:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        VisualizationSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.visualizations.get(
+            visualization_id="visualization_id",
+        )
+        """
+        _response = self._raw_client.get(visualization_id, request_options=request_options)
+        return _response.data
+
     def update(
         self,
         visualization_id: str,
@@ -107,6 +249,172 @@ class AsyncVisualizationsClient:
         AsyncRawVisualizationsClient
         """
         return self._raw_client
+
+    async def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[VisualizationSchema]:
+        """
+        Lists the organization's visualizations, filtered by publish status or
+        author if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[VisualizationSchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.visualizations.list()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    async def create(
+        self,
+        *,
+        name: str,
+        specification: typing.Dict[str, typing.Any],
+        description: typing.Optional[str] = OMIT,
+        dataset_id: typing.Optional[str] = OMIT,
+        query: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> VisualizationSchema:
+        """
+        Creates a visualization. Rejects a specification that fails to build a
+        chart from the data. If a visualization draws the same chart from the same
+        data, returns it instead, regardless of name and labels.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's visualizations.
+
+        specification : typing.Dict[str, typing.Any]
+            Chart specification. It needs a chart_type: line, bar, scatter, box, or violin with traces, a list of {x_field, y_field, title?, group_by?, group_label?}; image with image_field and an optional caption_field; cube with x_field, y_field, channel_field, and intensity_field; big_number with value_field and optional aggregation, unit, and decimal_places; or sankey with stage_fields, two or more columns in stage order, and an optional value_field. Optional title, x_label, and y_label label the chart. Every field must be a column the data returns.
+
+        description : typing.Optional[str]
+            Description shown with the chart.
+
+        dataset_id : typing.Optional[str]
+            ID of a saved dataset to plot.
+
+        query : typing.Optional[str]
+            SQL query: a single read-only SELECT statement. Reference parameters as :name. The query is saved as a dataset named after the visualization, unless a dataset with the same query and default parameters exists.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses. Only used with query.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        VisualizationSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.visualizations.create(
+                name="name",
+                specification={"key": "value"},
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(
+            name=name,
+            specification=specification,
+            description=description,
+            dataset_id=dataset_id,
+            query=query,
+            default_parameters=default_parameters,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> VisualizationSchema:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        VisualizationSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.visualizations.get(
+                visualization_id="visualization_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(visualization_id, request_options=request_options)
+        return _response.data
 
     async def update(
         self,

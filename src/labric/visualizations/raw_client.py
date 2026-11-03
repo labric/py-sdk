@@ -14,6 +14,7 @@ from ..errors.bad_request_error import BadRequestError
 from ..errors.forbidden_error import ForbiddenError
 from ..errors.internal_server_error import InternalServerError
 from ..errors.not_found_error import NotFoundError
+from ..errors.service_unavailable_error import ServiceUnavailableError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.error_schema import ErrorSchema
@@ -29,6 +30,394 @@ OMIT = typing.cast(typing.Any, ...)
 class RawVisualizationsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[typing.List[VisualizationSchema]]:
+        """
+        Lists the organization's visualizations, filtered by publish status or
+        author if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[VisualizationSchema]]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/visualizations",
+            method="GET",
+            params={
+                "publish_status": publish_status,
+                "user_id": user_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[VisualizationSchema],
+                    parse_obj_as(
+                        type_=typing.List[VisualizationSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def create(
+        self,
+        *,
+        name: str,
+        specification: typing.Dict[str, typing.Any],
+        description: typing.Optional[str] = OMIT,
+        dataset_id: typing.Optional[str] = OMIT,
+        query: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[VisualizationSchema]:
+        """
+        Creates a visualization. Rejects a specification that fails to build a
+        chart from the data. If a visualization draws the same chart from the same
+        data, returns it instead, regardless of name and labels.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's visualizations.
+
+        specification : typing.Dict[str, typing.Any]
+            Chart specification. It needs a chart_type: line, bar, scatter, box, or violin with traces, a list of {x_field, y_field, title?, group_by?, group_label?}; image with image_field and an optional caption_field; cube with x_field, y_field, channel_field, and intensity_field; big_number with value_field and optional aggregation, unit, and decimal_places; or sankey with stage_fields, two or more columns in stage order, and an optional value_field. Optional title, x_label, and y_label label the chart. Every field must be a column the data returns.
+
+        description : typing.Optional[str]
+            Description shown with the chart.
+
+        dataset_id : typing.Optional[str]
+            ID of a saved dataset to plot.
+
+        query : typing.Optional[str]
+            SQL query: a single read-only SELECT statement. Reference parameters as :name. The query is saved as a dataset named after the visualization, unless a dataset with the same query and default parameters exists.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses. Only used with query.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[VisualizationSchema]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/visualizations",
+            method="POST",
+            json={
+                "name": name,
+                "description": description,
+                "specification": specification,
+                "dataset_id": dataset_id,
+                "query": query,
+                "default_parameters": default_parameters,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    VisualizationSchema,
+                    parse_obj_as(
+                        type_=VisualizationSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[VisualizationSchema]:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[VisualizationSchema]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"api/v1/visualizations/{encode_path_param(visualization_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    VisualizationSchema,
+                    parse_obj_as(
+                        type_=VisualizationSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def update(
         self,
@@ -178,6 +567,394 @@ class RawVisualizationsClient:
 class AsyncRawVisualizationsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    async def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[typing.List[VisualizationSchema]]:
+        """
+        Lists the organization's visualizations, filtered by publish status or
+        author if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[VisualizationSchema]]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/visualizations",
+            method="GET",
+            params={
+                "publish_status": publish_status,
+                "user_id": user_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[VisualizationSchema],
+                    parse_obj_as(
+                        type_=typing.List[VisualizationSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def create(
+        self,
+        *,
+        name: str,
+        specification: typing.Dict[str, typing.Any],
+        description: typing.Optional[str] = OMIT,
+        dataset_id: typing.Optional[str] = OMIT,
+        query: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[VisualizationSchema]:
+        """
+        Creates a visualization. Rejects a specification that fails to build a
+        chart from the data. If a visualization draws the same chart from the same
+        data, returns it instead, regardless of name and labels.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's visualizations.
+
+        specification : typing.Dict[str, typing.Any]
+            Chart specification. It needs a chart_type: line, bar, scatter, box, or violin with traces, a list of {x_field, y_field, title?, group_by?, group_label?}; image with image_field and an optional caption_field; cube with x_field, y_field, channel_field, and intensity_field; big_number with value_field and optional aggregation, unit, and decimal_places; or sankey with stage_fields, two or more columns in stage order, and an optional value_field. Optional title, x_label, and y_label label the chart. Every field must be a column the data returns.
+
+        description : typing.Optional[str]
+            Description shown with the chart.
+
+        dataset_id : typing.Optional[str]
+            ID of a saved dataset to plot.
+
+        query : typing.Optional[str]
+            SQL query: a single read-only SELECT statement. Reference parameters as :name. The query is saved as a dataset named after the visualization, unless a dataset with the same query and default parameters exists.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses. Only used with query.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[VisualizationSchema]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/visualizations",
+            method="POST",
+            json={
+                "name": name,
+                "description": description,
+                "specification": specification,
+                "dataset_id": dataset_id,
+                "query": query,
+                "default_parameters": default_parameters,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    VisualizationSchema,
+                    parse_obj_as(
+                        type_=VisualizationSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[VisualizationSchema]:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[VisualizationSchema]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"api/v1/visualizations/{encode_path_param(visualization_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    VisualizationSchema,
+                    parse_obj_as(
+                        type_=VisualizationSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def update(
         self,

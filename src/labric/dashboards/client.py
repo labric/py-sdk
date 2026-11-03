@@ -7,6 +7,7 @@ from ..core.request_options import RequestOptions
 from ..types.dashboard_schema import DashboardSchema
 from ..types.publish_status import PublishStatus
 from .raw_client import AsyncRawDashboardsClient, RawDashboardsClient
+from .types.create_dashboard_schema_items_item import CreateDashboardSchemaItemsItem
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -26,6 +27,136 @@ class DashboardsClient:
         RawDashboardsClient
         """
         return self._raw_client
+
+    def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[DashboardSchema]:
+        """
+        Lists the organization's dashboards, filtered by publish status or
+        author if given. Items are omitted. Get a dashboard to see its items.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[DashboardSchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.dashboards.list()
+        """
+        _response = self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    def create(
+        self,
+        *,
+        name: str,
+        items: typing.Sequence[CreateDashboardSchemaItemsItem],
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DashboardSchema:
+        """
+        Creates a dashboard and any new visualizations among its items in one
+        transaction. New visualizations are validated as in Create a visualization.
+        If a dashboard with the same items exists, returns it instead, regardless
+        of name and layout.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's dashboards.
+
+        items : typing.Sequence[CreateDashboardSchemaItemsItem]
+            Items, in layout order.
+
+        description : typing.Optional[str]
+            Summary shown under the dashboard's name.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DashboardSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+        from labric.dashboards import CreateDashboardSchemaItemsItem_Text
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.dashboards.create(
+            name="name",
+            items=[
+                CreateDashboardSchemaItemsItem_Text(
+                    text="text",
+                )
+            ],
+        )
+        """
+        _response = self._raw_client.create(
+            name=name, items=items, description=description, request_options=request_options
+        )
+        return _response.data
+
+    def get(self, dashboard_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> DashboardSchema:
+        """
+        Returns the dashboard with its items.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        dashboard_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DashboardSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.dashboards.get(
+            dashboard_id="dashboard_id",
+        )
+        """
+        _response = self._raw_client.get(dashboard_id, request_options=request_options)
+        return _response.data
 
     def update(
         self,
@@ -97,6 +228,162 @@ class AsyncDashboardsClient:
         AsyncRawDashboardsClient
         """
         return self._raw_client
+
+    async def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[DashboardSchema]:
+        """
+        Lists the organization's dashboards, filtered by publish status or
+        author if given. Items are omitted. Get a dashboard to see its items.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[DashboardSchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.dashboards.list()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    async def create(
+        self,
+        *,
+        name: str,
+        items: typing.Sequence[CreateDashboardSchemaItemsItem],
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DashboardSchema:
+        """
+        Creates a dashboard and any new visualizations among its items in one
+        transaction. New visualizations are validated as in Create a visualization.
+        If a dashboard with the same items exists, returns it instead, regardless
+        of name and layout.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's dashboards.
+
+        items : typing.Sequence[CreateDashboardSchemaItemsItem]
+            Items, in layout order.
+
+        description : typing.Optional[str]
+            Summary shown under the dashboard's name.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DashboardSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+        from labric.dashboards import CreateDashboardSchemaItemsItem_Text
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.dashboards.create(
+                name="name",
+                items=[
+                    CreateDashboardSchemaItemsItem_Text(
+                        text="text",
+                    )
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(
+            name=name, items=items, description=description, request_options=request_options
+        )
+        return _response.data
+
+    async def get(
+        self, dashboard_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> DashboardSchema:
+        """
+        Returns the dashboard with its items.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        dashboard_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DashboardSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.dashboards.get(
+                dashboard_id="dashboard_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(dashboard_id, request_options=request_options)
+        return _response.data
 
     async def update(
         self,

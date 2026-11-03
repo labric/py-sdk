@@ -27,6 +27,136 @@ class DatasetsClient:
         """
         return self._raw_client
 
+    def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[DatasetSchema]:
+        """
+        Lists the organization's datasets, filtered by publish status or author
+        if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[DatasetSchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.datasets.list()
+        """
+        _response = self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    def create(
+        self,
+        *,
+        name: str,
+        query: str,
+        description: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DatasetSchema:
+        """
+        Creates a dataset. Rejects a query that fails to run against the
+        organization's data. If a dataset with the same name, query, and default
+        parameters exists, returns it instead.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's datasets.
+
+        query : str
+            SQL query: a single read-only SELECT statement. Reference parameters as :name.
+
+        description : typing.Optional[str]
+            Description shown with the dataset.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.datasets.create(
+            name="name",
+            query="query",
+        )
+        """
+        _response = self._raw_client.create(
+            name=name,
+            query=query,
+            description=description,
+            default_parameters=default_parameters,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get(self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> DatasetSchema:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        dataset_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.datasets.get(
+            dataset_id="dataset_id",
+        )
+        """
+        _response = self._raw_client.get(dataset_id, request_options=request_options)
+        return _response.data
+
     def update(
         self,
         dataset_id: str,
@@ -108,6 +238,160 @@ class AsyncDatasetsClient:
         AsyncRawDatasetsClient
         """
         return self._raw_client
+
+    async def list(
+        self,
+        *,
+        publish_status: typing.Optional[PublishStatus] = None,
+        user_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[DatasetSchema]:
+        """
+        Lists the organization's datasets, filtered by publish status or author
+        if given.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        publish_status : typing.Optional[PublishStatus]
+
+        user_id : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[DatasetSchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.datasets.list()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list(
+            publish_status=publish_status, user_id=user_id, request_options=request_options
+        )
+        return _response.data
+
+    async def create(
+        self,
+        *,
+        name: str,
+        query: str,
+        description: typing.Optional[str] = OMIT,
+        default_parameters: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DatasetSchema:
+        """
+        Creates a dataset. Rejects a query that fails to run against the
+        organization's data. If a dataset with the same name, query, and default
+        parameters exists, returns it instead.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        name : str
+            Name, unique among the organization's datasets.
+
+        query : str
+            SQL query: a single read-only SELECT statement. Reference parameters as :name.
+
+        description : typing.Optional[str]
+            Description shown with the dataset.
+
+        default_parameters : typing.Optional[typing.Dict[str, typing.Any]]
+            Default values for the query's parameters, keyed by name. Give one for every parameter the query uses.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.datasets.create(
+                name="name",
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(
+            name=name,
+            query=query,
+            description=description,
+            default_parameters=default_parameters,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get(self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> DatasetSchema:
+        """
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        dataset_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.datasets.get(
+                dataset_id="dataset_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(dataset_id, request_options=request_options)
+        return _response.data
 
     async def update(
         self,
