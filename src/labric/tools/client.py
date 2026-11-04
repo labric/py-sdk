@@ -6,8 +6,6 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
-from ..types.query_result import QueryResult
-from ..types.queryable_table_schema import QueryableTableSchema
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -156,7 +154,7 @@ class ToolsClient:
         """
         Read records from a table.
 
-        Deprecated: use execute_sql (client.tools.execute_sql) to read rows. To
+        Deprecated: use execute_sql (client.data.query) to read rows. To
         point a write at an existing row, use a lookup such as {"name": "S-001"}
         in write_data instead of reading the row's id first.
 
@@ -207,97 +205,6 @@ class ToolsClient:
             mode=mode,
             request_options=request_options,
         )
-        return _response.data
-
-    def execute_sql(
-        self,
-        *,
-        query: str,
-        params: typing.Optional[typing.Sequence[typing.Any]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> QueryResult:
-        """
-        Execute a read-only SQL query.
-
-        Runs the query against the organization's read replica, so it cannot
-        mutate data. Only SELECT statements are accepted. Supports positional
-        parameters: write %s placeholders in the query and pass the values in
-        order in the params list. Named :param placeholders belong to saved
-        dataset queries and are not accepted here. Use the schema tool to discover tables
-        first, and reference each column by its sql_column_name — foreign keys
-        carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
-        column).
-
-        Requires an API key with the `read` scope.
-
-        Parameters
-        ----------
-        query : str
-
-        params : typing.Optional[typing.Sequence[typing.Any]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        QueryResult
-            OK
-
-        Examples
-        --------
-        from labric import Labric
-
-        client = Labric(
-            api_key="YOUR_API_KEY",
-        )
-        client.tools.execute_sql(
-            query="query",
-        )
-        """
-        _response = self._raw_client.execute_sql(query=query, params=params, request_options=request_options)
-        return _response.data
-
-    def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[QueryableTableSchema]:
-        """
-        Describe the organization's data schema.
-
-        Returns every table the agent can target, including its semantic category
-        (e.g. raw vs. curated), description, and full column definitions with types,
-        nullability, uniqueness, and foreign-key targets. Each column carries two
-        names: 'name' is what the read and write tools accept, and 'sql_column_name'
-        is the physical column for SQL queries (a column holding another row's key
-        carries an _id suffix).
-        The org's own tables are followed by the platform tables (core_experiment,
-        core_instrument, and similar) that SQL queries can join against, ending with
-        core_user, which holds the org's members; those have no id or semantic
-        category. This is the map a parser writes into: use it to plan which tables
-        to populate and how rows link.
-
-        Requires an API key with the `read` scope.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[QueryableTableSchema]
-            OK
-
-        Examples
-        --------
-        from labric import Labric
-
-        client = Labric(
-            api_key="YOUR_API_KEY",
-        )
-        client.tools.get_schema()
-        """
-        _response = self._raw_client.get_schema(request_options=request_options)
         return _response.data
 
     def batch_write(
@@ -503,7 +410,7 @@ class AsyncToolsClient:
         """
         Read records from a table.
 
-        Deprecated: use execute_sql (client.tools.execute_sql) to read rows. To
+        Deprecated: use execute_sql (client.data.query) to read rows. To
         point a write at an existing row, use a lookup such as {"name": "S-001"}
         in write_data instead of reading the row's id first.
 
@@ -562,113 +469,6 @@ class AsyncToolsClient:
             mode=mode,
             request_options=request_options,
         )
-        return _response.data
-
-    async def execute_sql(
-        self,
-        *,
-        query: str,
-        params: typing.Optional[typing.Sequence[typing.Any]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> QueryResult:
-        """
-        Execute a read-only SQL query.
-
-        Runs the query against the organization's read replica, so it cannot
-        mutate data. Only SELECT statements are accepted. Supports positional
-        parameters: write %s placeholders in the query and pass the values in
-        order in the params list. Named :param placeholders belong to saved
-        dataset queries and are not accepted here. Use the schema tool to discover tables
-        first, and reference each column by its sql_column_name — foreign keys
-        carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
-        column).
-
-        Requires an API key with the `read` scope.
-
-        Parameters
-        ----------
-        query : str
-
-        params : typing.Optional[typing.Sequence[typing.Any]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        QueryResult
-            OK
-
-        Examples
-        --------
-        import asyncio
-
-        from labric import AsyncLabric
-
-        client = AsyncLabric(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.tools.execute_sql(
-                query="query",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.execute_sql(query=query, params=params, request_options=request_options)
-        return _response.data
-
-    async def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[QueryableTableSchema]:
-        """
-        Describe the organization's data schema.
-
-        Returns every table the agent can target, including its semantic category
-        (e.g. raw vs. curated), description, and full column definitions with types,
-        nullability, uniqueness, and foreign-key targets. Each column carries two
-        names: 'name' is what the read and write tools accept, and 'sql_column_name'
-        is the physical column for SQL queries (a column holding another row's key
-        carries an _id suffix).
-        The org's own tables are followed by the platform tables (core_experiment,
-        core_instrument, and similar) that SQL queries can join against, ending with
-        core_user, which holds the org's members; those have no id or semantic
-        category. This is the map a parser writes into: use it to plan which tables
-        to populate and how rows link.
-
-        Requires an API key with the `read` scope.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[QueryableTableSchema]
-            OK
-
-        Examples
-        --------
-        import asyncio
-
-        from labric import AsyncLabric
-
-        client = AsyncLabric(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.tools.get_schema()
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.get_schema(request_options=request_options)
         return _response.data
 
     async def batch_write(

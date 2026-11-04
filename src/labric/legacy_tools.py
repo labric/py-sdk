@@ -1,7 +1,8 @@
 """Deprecated client.tools.* aliases for methods that moved to entity groups.
 
-Scripts written against SDK versions before the jobs and files groups call
-client.tools.start_job_execution(), upload_file(), and the other names below.
+Scripts written against SDK versions before the jobs, files, and data groups
+call client.tools.start_job_execution(), upload_file(), execute_sql(), and the
+other names below.
 These aliases keep those calls working, forwarding to the new group's method
 with a deprecation warning.
 """
@@ -23,6 +24,10 @@ LEGACY_TOOLS_METHODS = {
         "upload_file": "upload",
         "list_files": "list",
         "get_file_content": "get_content",
+    },
+    "data": {
+        "execute_sql": "query",
+        "get_schema": "get_schema",
     },
 }
 

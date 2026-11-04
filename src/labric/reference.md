@@ -2402,7 +2402,7 @@ client.tools.write(
 
 Read records from a table.
 
-Deprecated: use execute_sql (client.tools.execute_sql) to read rows. To
+Deprecated: use execute_sql (client.data.query) to read rows. To
 point a write at an existing row, use a lookup such as {"name": "S-001"}
 in write_data instead of reading the row's id first.
 
@@ -2480,175 +2480,6 @@ client.tools.read(
     
 </dd>
 </dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">execute_sql</a>(...) -> QueryResult</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Execute a read-only SQL query.
-
-Runs the query against the organization's read replica, so it cannot
-mutate data. Only SELECT statements are accepted. Supports positional
-parameters: write %s placeholders in the query and pass the values in
-order in the params list. Named :param placeholders belong to saved
-dataset queries and are not accepted here. Use the schema tool to discover tables
-first, and reference each column by its sql_column_name — foreign keys
-carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
-column).
-
-Requires an API key with the `read` scope.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.execute_sql(
-    query="query",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**query:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**params:** `typing.Optional[typing.List[typing.Any]]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_schema</a>() -> typing.List[QueryableTableSchema]</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Describe the organization's data schema.
-
-Returns every table the agent can target, including its semantic category
-(e.g. raw vs. curated), description, and full column definitions with types,
-nullability, uniqueness, and foreign-key targets. Each column carries two
-names: 'name' is what the read and write tools accept, and 'sql_column_name'
-is the physical column for SQL queries (a column holding another row's key
-carries an _id suffix).
-The org's own tables are followed by the platform tables (core_experiment,
-core_instrument, and similar) that SQL queries can join against, ending with
-core_user, which holds the org's members; those have no id or semantic
-category. This is the map a parser writes into: use it to plan which tables
-to populate and how rows link.
-
-Requires an API key with the `read` scope.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.get_schema()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
 
 <dl>
 <dd>
@@ -3089,6 +2920,175 @@ client.data.write()
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.data.<a href="src/labric/data/client.py">query</a>(...) -> QueryResult</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Execute a read-only SQL query.
+
+Runs the query against the organization's read replica, so it cannot
+mutate data. Only SELECT statements are accepted. Supports positional
+parameters: write %s placeholders in the query and pass the values in
+order in the params list. Named :param placeholders belong to saved
+dataset queries and are not accepted here. Use the schema tool to discover tables
+first, and reference each column by its sql_column_name — foreign keys
+carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
+column).
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.data.query(
+    query="query",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**query:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**params:** `typing.Optional[typing.List[typing.Any]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.data.<a href="src/labric/data/client.py">get_schema</a>() -> typing.List[QueryableTableSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Describe the organization's data schema.
+
+Returns every table the agent can target, including its semantic category
+(e.g. raw vs. curated), description, and full column definitions with types,
+nullability, uniqueness, and foreign-key targets. Each column carries two
+names: 'name' is what the read and write tools accept, and 'sql_column_name'
+is the physical column for SQL queries (a column holding another row's key
+carries an _id suffix).
+The org's own tables are followed by the platform tables (core_experiment,
+core_instrument, and similar) that SQL queries can join against, ending with
+core_user, which holds the org's members; those have no id or semantic
+category. This is the map a parser writes into: use it to plan which tables
+to populate and how rows link.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.data.get_schema()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
 
 <dl>
 <dd>

@@ -14,10 +14,13 @@ from ..errors.bad_request_error import BadRequestError
 from ..errors.forbidden_error import ForbiddenError
 from ..errors.internal_server_error import InternalServerError
 from ..errors.not_found_error import NotFoundError
+from ..errors.service_unavailable_error import ServiceUnavailableError
 from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.error_schema import ErrorSchema
+from ..types.query_result import QueryResult
+from ..types.queryable_table_schema import QueryableTableSchema
 from ..types.series_write import SeriesWrite
 from ..types.table_write import TableWrite
 from ..types.validation_error_schema import ValidationErrorSchema
@@ -225,6 +228,270 @@ class RawDataClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def query(
+        self,
+        *,
+        query: str,
+        params: typing.Optional[typing.Sequence[typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[QueryResult]:
+        """
+        Execute a read-only SQL query.
+
+        Runs the query against the organization's read replica, so it cannot
+        mutate data. Only SELECT statements are accepted. Supports positional
+        parameters: write %s placeholders in the query and pass the values in
+        order in the params list. Named :param placeholders belong to saved
+        dataset queries and are not accepted here. Use the schema tool to discover tables
+        first, and reference each column by its sql_column_name — foreign keys
+        carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
+        column).
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        query : str
+
+        params : typing.Optional[typing.Sequence[typing.Any]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[QueryResult]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/data/query",
+            method="POST",
+            json={
+                "query": query,
+                "params": params,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    QueryResult,
+                    parse_obj_as(
+                        type_=QueryResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_schema(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[typing.List[QueryableTableSchema]]:
+        """
+        Describe the organization's data schema.
+
+        Returns every table the agent can target, including its semantic category
+        (e.g. raw vs. curated), description, and full column definitions with types,
+        nullability, uniqueness, and foreign-key targets. Each column carries two
+        names: 'name' is what the read and write tools accept, and 'sql_column_name'
+        is the physical column for SQL queries (a column holding another row's key
+        carries an _id suffix).
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against, ending with
+        core_user, which holds the org's members; those have no id or semantic
+        category. This is the map a parser writes into: use it to plan which tables
+        to populate and how rows link.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[QueryableTableSchema]]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/data/schema",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[QueryableTableSchema],
+                    parse_obj_as(
+                        type_=typing.List[QueryableTableSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawDataClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -399,6 +666,270 @@ class AsyncRawDataClient:
                         ErrorSchema,
                         parse_obj_as(
                             type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def query(
+        self,
+        *,
+        query: str,
+        params: typing.Optional[typing.Sequence[typing.Any]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[QueryResult]:
+        """
+        Execute a read-only SQL query.
+
+        Runs the query against the organization's read replica, so it cannot
+        mutate data. Only SELECT statements are accepted. Supports positional
+        parameters: write %s placeholders in the query and pass the values in
+        order in the params list. Named :param placeholders belong to saved
+        dataset queries and are not accepted here. Use the schema tool to discover tables
+        first, and reference each column by its sql_column_name — foreign keys
+        carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
+        column).
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        query : str
+
+        params : typing.Optional[typing.Sequence[typing.Any]]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[QueryResult]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/data/query",
+            method="POST",
+            json={
+                "query": query,
+                "params": params,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    QueryResult,
+                    parse_obj_as(
+                        type_=QueryResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_schema(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[typing.List[QueryableTableSchema]]:
+        """
+        Describe the organization's data schema.
+
+        Returns every table the agent can target, including its semantic category
+        (e.g. raw vs. curated), description, and full column definitions with types,
+        nullability, uniqueness, and foreign-key targets. Each column carries two
+        names: 'name' is what the read and write tools accept, and 'sql_column_name'
+        is the physical column for SQL queries (a column holding another row's key
+        carries an _id suffix).
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against, ending with
+        core_user, which holds the org's members; those have no id or semantic
+        category. This is the map a parser writes into: use it to plan which tables
+        to populate and how rows link.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[QueryableTableSchema]]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/data/schema",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[QueryableTableSchema],
+                    parse_obj_as(
+                        type_=typing.List[QueryableTableSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
