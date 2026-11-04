@@ -33,7 +33,11 @@ class RawImagesClient:
         self._client_wrapper = client_wrapper
 
     def list_annotations(
-        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        *,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[AnnotationSchema]]:
         """
         List the masks saved on an image, oldest first.
@@ -49,6 +53,8 @@ class RawImagesClient:
         ----------
         file_id : str
 
+        frame_index : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -60,6 +66,9 @@ class RawImagesClient:
         _response = self._client_wrapper.httpx_client.request(
             f"api/v1/images/{encode_path_param(file_id)}/annotations",
             method="GET",
+            params={
+                "frame_index": frame_index,
+            },
             request_options=request_options,
         )
         try:
@@ -307,7 +316,11 @@ class AsyncRawImagesClient:
         self._client_wrapper = client_wrapper
 
     async def list_annotations(
-        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        *,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[AnnotationSchema]]:
         """
         List the masks saved on an image, oldest first.
@@ -323,6 +336,8 @@ class AsyncRawImagesClient:
         ----------
         file_id : str
 
+        frame_index : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -334,6 +349,9 @@ class AsyncRawImagesClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"api/v1/images/{encode_path_param(file_id)}/annotations",
             method="GET",
+            params={
+                "frame_index": frame_index,
+            },
             request_options=request_options,
         )
         try:

@@ -16,6 +16,7 @@ class SaveAnnotationSchema(UniversalBaseModel):
     width: typing.Optional[int] = None
     height: typing.Optional[int] = None
     label: str
+    frame_index: typing.Optional[int] = None
     is_human_vetted: typing.Optional[bool] = None
     file_id: typing.Optional[str] = None
 

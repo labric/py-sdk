@@ -28,7 +28,11 @@ class ImagesClient:
         return self._raw_client
 
     def list_annotations(
-        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        *,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[AnnotationSchema]:
         """
         List the masks saved on an image, oldest first.
@@ -43,6 +47,8 @@ class ImagesClient:
         Parameters
         ----------
         file_id : str
+
+        frame_index : typing.Optional[int]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -63,7 +69,7 @@ class ImagesClient:
             file_id="file_id",
         )
         """
-        _response = self._raw_client.list_annotations(file_id, request_options=request_options)
+        _response = self._raw_client.list_annotations(file_id, frame_index=frame_index, request_options=request_options)
         return _response.data
 
     def annotate(
@@ -148,7 +154,11 @@ class AsyncImagesClient:
         return self._raw_client
 
     async def list_annotations(
-        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        *,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[AnnotationSchema]:
         """
         List the masks saved on an image, oldest first.
@@ -163,6 +173,8 @@ class AsyncImagesClient:
         Parameters
         ----------
         file_id : str
+
+        frame_index : typing.Optional[int]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -191,7 +203,9 @@ class AsyncImagesClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_annotations(file_id, request_options=request_options)
+        _response = await self._raw_client.list_annotations(
+            file_id, frame_index=frame_index, request_options=request_options
+        )
         return _response.data
 
     async def annotate(

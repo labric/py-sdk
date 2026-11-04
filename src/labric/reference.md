@@ -2668,6 +2668,14 @@ client.images.list_annotations(
 <dl>
 <dd>
 
+**frame_index:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>

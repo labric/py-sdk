@@ -9,6 +9,7 @@ from .mask_bounding_box_schema import MaskBoundingBoxSchema
 
 
 class AnnotationSchema(UniversalBaseModel):
+    frame_index: typing.Optional[int] = None
     id: str
     label: str
     mask_url: typing.Optional[str] = None
