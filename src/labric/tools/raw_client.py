@@ -237,6 +237,10 @@ class RawToolsClient:
         """
         Read records from a table.
 
+        Deprecated: use execute_sql (client.tools.execute_sql) to read rows. To
+        point a write at an existing row, use a lookup such as {"name": "S-001"}
+        in write_data instead of reading the row's id first.
+
         Returns records from the specified table matching the given filters.
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
         to retrieve all matching records.
@@ -975,6 +979,10 @@ class AsyncRawToolsClient:
     ) -> AsyncHttpResponse[typing.List[typing.Dict[str, typing.Any]]]:
         """
         Read records from a table.
+
+        Deprecated: use execute_sql (client.tools.execute_sql) to read rows. To
+        point a write at an existing row, use a lookup such as {"name": "S-001"}
+        in write_data instead of reading the row's id first.
 
         Returns records from the specified table matching the given filters.
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
