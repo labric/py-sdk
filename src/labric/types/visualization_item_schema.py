@@ -20,7 +20,7 @@ class VisualizationItemSchema(UniversalBaseModel):
 
     size_y: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Height in rows.
+    Height in rows of 40 pixels, with 16 between rows. Text defaults to 2 rows and charts to 9.
     """
 
     visualization_id: typing.Optional[str] = pydantic.Field(default=None)

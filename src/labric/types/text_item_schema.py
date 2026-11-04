@@ -18,7 +18,7 @@ class TextItemSchema(UniversalBaseModel):
 
     size_y: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Height in rows.
+    Height in rows of 40 pixels, with 16 between rows. Text defaults to 2 rows and charts to 9.
     """
 
     text: str = pydantic.Field()
