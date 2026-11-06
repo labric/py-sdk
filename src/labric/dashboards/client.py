@@ -5,6 +5,7 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.dashboard_schema import DashboardSchema
+from ..types.model_deleted_schema import ModelDeletedSchema
 from ..types.publish_status import PublishStatus
 from .raw_client import AsyncRawDashboardsClient, RawDashboardsClient
 from .types.create_dashboard_schema_items_item import CreateDashboardSchemaItemsItem
@@ -156,6 +157,41 @@ class DashboardsClient:
         )
         """
         _response = self._raw_client.get(dashboard_id, request_options=request_options)
+        return _response.data
+
+    def delete(
+        self, dashboard_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a dashboard together with its items. The response lists the
+        deleted items as affected objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        dashboard_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.dashboards.delete(
+            dashboard_id="dashboard_id",
+        )
+        """
+        _response = self._raw_client.delete(dashboard_id, request_options=request_options)
         return _response.data
 
     def update(
@@ -383,6 +419,49 @@ class AsyncDashboardsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(dashboard_id, request_options=request_options)
+        return _response.data
+
+    async def delete(
+        self, dashboard_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a dashboard together with its items. The response lists the
+        deleted items as affected objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        dashboard_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.dashboards.delete(
+                dashboard_id="dashboard_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(dashboard_id, request_options=request_options)
         return _response.data
 
     async def update(

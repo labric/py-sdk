@@ -9,6 +9,7 @@ if typing.TYPE_CHECKING:
     from .types import (
         AccessLevel,
         ActivityActorSchema,
+        AffectedObjectSchema,
         AgentRunEvent,
         AgentRunRequest,
         AgentRunResponse,
@@ -40,6 +41,7 @@ if typing.TYPE_CHECKING:
         MaskBoundingBoxSchema,
         MlModelTaskType,
         MlProblemType,
+        ModelDeletedSchema,
         OffPlatformJobExecutionSchema,
         ParameterDefinitionSchema,
         ParameterDefinitionSchemaWidgetType,
@@ -131,6 +133,7 @@ if typing.TYPE_CHECKING:
 _dynamic_imports: typing.Dict[str, str] = {
     "AccessLevel": ".types",
     "ActivityActorSchema": ".types",
+    "AffectedObjectSchema": ".types",
     "AgentRunEvent": ".types",
     "AgentRunRequest": ".types",
     "AgentRunResponse": ".types",
@@ -181,6 +184,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "MaskBoundingBoxSchema": ".types",
     "MlModelTaskType": ".types",
     "MlProblemType": ".types",
+    "ModelDeletedSchema": ".types",
     "NotFoundError": ".errors",
     "OffPlatformJobExecutionSchema": ".types",
     "ParameterDefinitionSchema": ".types",
@@ -270,6 +274,7 @@ def __dir__():
 __all__ = [
     "AccessLevel",
     "ActivityActorSchema",
+    "AffectedObjectSchema",
     "AgentRunEvent",
     "AgentRunRequest",
     "AgentRunResponse",
@@ -320,6 +325,7 @@ __all__ = [
     "MaskBoundingBoxSchema",
     "MlModelTaskType",
     "MlProblemType",
+    "ModelDeletedSchema",
     "NotFoundError",
     "OffPlatformJobExecutionSchema",
     "ParameterDefinitionSchema",

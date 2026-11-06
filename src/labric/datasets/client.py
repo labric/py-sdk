@@ -5,6 +5,7 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.dataset_schema import DatasetSchema
+from ..types.model_deleted_schema import ModelDeletedSchema
 from ..types.publish_status import PublishStatus
 from .raw_client import AsyncRawDatasetsClient, RawDatasetsClient
 
@@ -155,6 +156,41 @@ class DatasetsClient:
         )
         """
         _response = self._raw_client.get(dataset_id, request_options=request_options)
+        return _response.data
+
+    def delete(self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> ModelDeletedSchema:
+        """
+        Delete a dataset together with the visualizations built on it and the
+        dashboard items that show them. The response lists the deleted
+        visualizations as affected objects. Fails with 409 while an ML model
+        version trained on the dataset exists.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        dataset_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.datasets.delete(
+            dataset_id="dataset_id",
+        )
+        """
+        _response = self._raw_client.delete(dataset_id, request_options=request_options)
         return _response.data
 
     def update(
@@ -391,6 +427,51 @@ class AsyncDatasetsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(dataset_id, request_options=request_options)
+        return _response.data
+
+    async def delete(
+        self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a dataset together with the visualizations built on it and the
+        dashboard items that show them. The response lists the deleted
+        visualizations as affected objects. Fails with 409 while an ML model
+        version trained on the dataset exists.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        dataset_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.datasets.delete(
+                dataset_id="dataset_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(dataset_id, request_options=request_options)
         return _response.data
 
     async def update(

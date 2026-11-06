@@ -8,6 +8,7 @@ from importlib import import_module
 if typing.TYPE_CHECKING:
     from .access_level import AccessLevel
     from .activity_actor_schema import ActivityActorSchema
+    from .affected_object_schema import AffectedObjectSchema
     from .agent_run_event import AgentRunEvent
     from .agent_run_request import AgentRunRequest
     from .agent_run_response import AgentRunResponse
@@ -39,6 +40,7 @@ if typing.TYPE_CHECKING:
     from .mask_bounding_box_schema import MaskBoundingBoxSchema
     from .ml_model_task_type import MlModelTaskType
     from .ml_problem_type import MlProblemType
+    from .model_deleted_schema import ModelDeletedSchema
     from .off_platform_job_execution_schema import OffPlatformJobExecutionSchema
     from .parameter_definition_schema import ParameterDefinitionSchema
     from .parameter_definition_schema_widget_type import ParameterDefinitionSchemaWidgetType
@@ -86,6 +88,7 @@ if typing.TYPE_CHECKING:
 _dynamic_imports: typing.Dict[str, str] = {
     "AccessLevel": ".access_level",
     "ActivityActorSchema": ".activity_actor_schema",
+    "AffectedObjectSchema": ".affected_object_schema",
     "AgentRunEvent": ".agent_run_event",
     "AgentRunRequest": ".agent_run_request",
     "AgentRunResponse": ".agent_run_response",
@@ -117,6 +120,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "MaskBoundingBoxSchema": ".mask_bounding_box_schema",
     "MlModelTaskType": ".ml_model_task_type",
     "MlProblemType": ".ml_problem_type",
+    "ModelDeletedSchema": ".model_deleted_schema",
     "OffPlatformJobExecutionSchema": ".off_platform_job_execution_schema",
     "ParameterDefinitionSchema": ".parameter_definition_schema",
     "ParameterDefinitionSchemaWidgetType": ".parameter_definition_schema_widget_type",
@@ -188,6 +192,7 @@ def __dir__():
 __all__ = [
     "AccessLevel",
     "ActivityActorSchema",
+    "AffectedObjectSchema",
     "AgentRunEvent",
     "AgentRunRequest",
     "AgentRunResponse",
@@ -219,6 +224,7 @@ __all__ = [
     "MaskBoundingBoxSchema",
     "MlModelTaskType",
     "MlProblemType",
+    "ModelDeletedSchema",
     "OffPlatformJobExecutionSchema",
     "ParameterDefinitionSchema",
     "ParameterDefinitionSchemaWidgetType",

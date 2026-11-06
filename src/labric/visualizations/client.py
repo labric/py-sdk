@@ -4,6 +4,7 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..types.model_deleted_schema import ModelDeletedSchema
 from ..types.publish_status import PublishStatus
 from ..types.visualization_schema import VisualizationSchema
 from .raw_client import AsyncRawVisualizationsClient, RawVisualizationsClient
@@ -167,6 +168,41 @@ class VisualizationsClient:
         )
         """
         _response = self._raw_client.get(visualization_id, request_options=request_options)
+        return _response.data
+
+    def delete(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a visualization together with the dashboard items that show it.
+        The response lists the deleted dashboard items as affected objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.visualizations.delete(
+            visualization_id="visualization_id",
+        )
+        """
+        _response = self._raw_client.delete(visualization_id, request_options=request_options)
         return _response.data
 
     def update(
@@ -414,6 +450,49 @@ class AsyncVisualizationsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(visualization_id, request_options=request_options)
+        return _response.data
+
+    async def delete(
+        self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a visualization together with the dashboard items that show it.
+        The response lists the deleted dashboard items as affected objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        visualization_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.visualizations.delete(
+                visualization_id="visualization_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(visualization_id, request_options=request_options)
         return _response.data
 
     async def update(
