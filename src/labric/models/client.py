@@ -6,6 +6,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.ml_model_task_type import MlModelTaskType
 from ..types.ml_problem_type import MlProblemType
+from ..types.model_deleted_schema import ModelDeletedSchema
 from ..types.predict_response_schema import PredictResponseSchema
 from ..types.quality_preset import QualityPreset
 from ..types.tools_ml_model_detail_schema import ToolsMlModelDetailSchema
@@ -143,6 +144,43 @@ class ModelsClient:
         )
         """
         _response = self._raw_client.get(ml_model_id, request_options=request_options)
+        return _response.data
+
+    def delete(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a model and all its versions.
+
+        Pending or running training is cancelled first, which stops its cloud training
+        jobs. The response lists the deleted versions in affected_objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.models.delete(
+            ml_model_id="ml_model_id",
+        )
+        """
+        _response = self._raw_client.delete(ml_model_id, request_options=request_options)
         return _response.data
 
     def get_training_log(
@@ -514,6 +552,51 @@ class AsyncModelsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(ml_model_id, request_options=request_options)
+        return _response.data
+
+    async def delete(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ModelDeletedSchema:
+        """
+        Delete a model and all its versions.
+
+        Pending or running training is cancelled first, which stops its cloud training
+        jobs. The response lists the deleted versions in affected_objects.
+
+        Requires an API key with the `write` scope.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ModelDeletedSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.models.delete(
+                ml_model_id="ml_model_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(ml_model_id, request_options=request_options)
         return _response.data
 
     async def get_training_log(

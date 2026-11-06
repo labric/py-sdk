@@ -4026,6 +4026,84 @@ client.models.get(
 </dl>
 </details>
 
+<details><summary><code>client.models.<a href="src/labric/models/client.py">delete</a>(...) -> ModelDeletedSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a model and all its versions.
+
+Pending or running training is cancelled first, which stops its cloud training
+jobs. The response lists the deleted versions in affected_objects.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.models.delete(
+    ml_model_id="ml_model_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ml_model_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.models.<a href="src/labric/models/client.py">get_training_log</a>(...) -> TrainingLogSchema</code></summary>
 <dl>
 <dd>
