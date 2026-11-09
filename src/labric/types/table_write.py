@@ -20,12 +20,12 @@ class TableWrite(UniversalBaseModel):
 
     rows: typing.List[typing.Dict[str, typing.Any]] = pydantic.Field()
     """
-    Rows keyed by column name. A row may carry '_ref': '<label>' so later rows and series can point at it with '@<label>'. A foreign key value may be an id, an '@<label>' reference to an earlier row, or a lookup object such as {'name': 'S-001'} that matches exactly one row that existed before the request. Omit a string 'id' primary key to have it generated.
+    Rows keyed by column name. A row may carry '_ref': '<label>' so later rows and series can point at it with '@<label>'. A foreign key value may be an id, an '@<label>' reference to an earlier row, or a lookup object such as {'name': 'S-001'} that matches exactly one row that existed before the request. The object_id, parent_id, and child_id columns of operationsubject and entityderivation also take an '@<label>' reference. Omit a string 'id' primary key to have it generated.
     """
 
     mode: typing.Optional[TableWriteMode] = pydantic.Field(default=None)
     """
-    'insert' creates every row. 'upsert' updates rows that match on key and creates the rest. 'update' and 'delete' require every row to match on key.
+    'insert' creates every row. 'upsert' updates rows that match on key and creates the rest. 'update' and 'delete' require every row to match on key. operationsubject and entityderivation take only 'insert' and 'delete'. An insert into them returns the stored row when the link already exists.
     """
 
     key: typing.Optional[typing.List[str]] = pydantic.Field(default=None)

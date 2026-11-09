@@ -60,6 +60,13 @@ class RawDataClient:
         omitted where the table allows it, and are always returned in input
         order.
 
+        The operationsubject and entityderivation core tables link rows of other
+        tables. Their object_id, parent_id, and child_id columns name a row of the
+        table given beside them, by id or by an "@s1" reference to an earlier row.
+        These tables take only insert and delete. An insert that repeats a stored
+        link returns the stored row. An operation subject with a role fills in the
+        role of a stored subject of the same entity that has none.
+
         A series holds the points of one parent row in a raw table as one list per
         column. Writing a series replaces the parent's existing series in that
         table, so repeating a write is safe. The server fills in the primary key,
@@ -68,12 +75,12 @@ class RawDataClient:
         Every row, series, and lookup is checked before anything is written, and
         all of those problems are reported together in errors. Each has a path
         naming its place in the request, such as tables[1].rows[0].sample. Keys
-        for upsert, update, and delete are matched as each table write is
-        applied, and any failure rolls back the whole request. The write is
-        recorded under the given job execution, the running job's execution when
-        called from a job script, or a new one. Reverting that execution deletes
-        the rows it created along with their series. Updates, deletes, and series
-        written to existing parents are not undone.
+        for upsert, update, and delete are matched, and linked rows are checked,
+        as each table write is applied. Any failure rolls back the whole request.
+        The write is recorded under the given job execution, the running job's
+        execution when called from a job script, or a new one. Reverting that
+        execution deletes the rows it created along with their series. Updates,
+        deletes, and series written to existing parents are not undone.
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
@@ -522,6 +529,13 @@ class AsyncRawDataClient:
         omitted where the table allows it, and are always returned in input
         order.
 
+        The operationsubject and entityderivation core tables link rows of other
+        tables. Their object_id, parent_id, and child_id columns name a row of the
+        table given beside them, by id or by an "@s1" reference to an earlier row.
+        These tables take only insert and delete. An insert that repeats a stored
+        link returns the stored row. An operation subject with a role fills in the
+        role of a stored subject of the same entity that has none.
+
         A series holds the points of one parent row in a raw table as one list per
         column. Writing a series replaces the parent's existing series in that
         table, so repeating a write is safe. The server fills in the primary key,
@@ -530,12 +544,12 @@ class AsyncRawDataClient:
         Every row, series, and lookup is checked before anything is written, and
         all of those problems are reported together in errors. Each has a path
         naming its place in the request, such as tables[1].rows[0].sample. Keys
-        for upsert, update, and delete are matched as each table write is
-        applied, and any failure rolls back the whole request. The write is
-        recorded under the given job execution, the running job's execution when
-        called from a job script, or a new one. Reverting that execution deletes
-        the rows it created along with their series. Updates, deletes, and series
-        written to existing parents are not undone.
+        for upsert, update, and delete are matched, and linked rows are checked,
+        as each table write is applied. Any failure rolls back the whole request.
+        The write is recorded under the given job execution, the running job's
+        execution when called from a job script, or a new one. Reverting that
+        execution deletes the rows it created along with their series. Updates,
+        deletes, and series written to existing parents are not undone.
 
         The request body must be under 4.5 MB, which the row and series value
         limits keep most requests within.
