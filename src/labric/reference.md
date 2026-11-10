@@ -2754,6 +2754,107 @@ client.tools.batch_write(
 </details>
 
 ## images
+<details><summary><code>client.images.<a href="src/labric/images/client.py">list_similar</a>(...) -> SimilarImageMatchesSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the organization's images that look most like an image, most
+similar first.
+
+Each result has a similarity from -1 to 1, where higher means more alike,
+and a signed thumbnail_url. Signed URLs expire, so download thumbnails soon
+after listing them. Pass min_similarity to leave out weaker matches.
+Similarity values can change when the platform updates how it compares
+images, so use them to rank results and not as stored thresholds.
+
+The file must be a processed image. Returns 409 when the image has not
+been analyzed for similarity.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.images.list_similar(
+    file_id="file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**min_similarity:** `typing.Optional[float]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.images.<a href="src/labric/images/client.py">list_annotations</a>(...) -> typing.List[AnnotationSchema]</code></summary>
 <dl>
 <dd>

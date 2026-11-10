@@ -59,6 +59,8 @@ if typing.TYPE_CHECKING:
     from .series_write import SeriesWrite
     from .series_write_parent import SeriesWriteParent
     from .series_write_result import SeriesWriteResult
+    from .similar_image_match_schema import SimilarImageMatchSchema
+    from .similar_image_matches_schema import SimilarImageMatchesSchema
     from .start_job_execution_schema import StartJobExecutionSchema
     from .table_summary import TableSummary
     from .table_write import TableWrite
@@ -139,6 +141,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SeriesWrite": ".series_write",
     "SeriesWriteParent": ".series_write_parent",
     "SeriesWriteResult": ".series_write_result",
+    "SimilarImageMatchSchema": ".similar_image_match_schema",
+    "SimilarImageMatchesSchema": ".similar_image_matches_schema",
     "StartJobExecutionSchema": ".start_job_execution_schema",
     "TableSummary": ".table_summary",
     "TableWrite": ".table_write",
@@ -243,6 +247,8 @@ __all__ = [
     "SeriesWrite",
     "SeriesWriteParent",
     "SeriesWriteResult",
+    "SimilarImageMatchSchema",
+    "SimilarImageMatchesSchema",
     "StartJobExecutionSchema",
     "TableSummary",
     "TableWrite",

@@ -6,6 +6,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.annotation_schema import AnnotationSchema
 from ..types.save_annotation_schema import SaveAnnotationSchema
+from ..types.similar_image_matches_schema import SimilarImageMatchesSchema
 from .raw_client import AsyncRawImagesClient, RawImagesClient
 
 # this is used as the default value for optional parameters
@@ -26,6 +27,61 @@ class ImagesClient:
         RawImagesClient
         """
         return self._raw_client
+
+    def list_similar(
+        self,
+        file_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        min_similarity: typing.Optional[float] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SimilarImageMatchesSchema:
+        """
+        List the organization's images that look most like an image, most
+        similar first.
+
+        Each result has a similarity from -1 to 1, where higher means more alike,
+        and a signed thumbnail_url. Signed URLs expire, so download thumbnails soon
+        after listing them. Pass min_similarity to leave out weaker matches.
+        Similarity values can change when the platform updates how it compares
+        images, so use them to rank results and not as stored thresholds.
+
+        The file must be a processed image. Returns 409 when the image has not
+        been analyzed for similarity.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        limit : typing.Optional[int]
+
+        min_similarity : typing.Optional[float]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SimilarImageMatchesSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.images.list_similar(
+            file_id="file_id",
+        )
+        """
+        _response = self._raw_client.list_similar(
+            file_id, limit=limit, min_similarity=min_similarity, request_options=request_options
+        )
+        return _response.data
 
     def list_annotations(
         self,
@@ -152,6 +208,69 @@ class AsyncImagesClient:
         AsyncRawImagesClient
         """
         return self._raw_client
+
+    async def list_similar(
+        self,
+        file_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        min_similarity: typing.Optional[float] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SimilarImageMatchesSchema:
+        """
+        List the organization's images that look most like an image, most
+        similar first.
+
+        Each result has a similarity from -1 to 1, where higher means more alike,
+        and a signed thumbnail_url. Signed URLs expire, so download thumbnails soon
+        after listing them. Pass min_similarity to leave out weaker matches.
+        Similarity values can change when the platform updates how it compares
+        images, so use them to rank results and not as stored thresholds.
+
+        The file must be a processed image. Returns 409 when the image has not
+        been analyzed for similarity.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        limit : typing.Optional[int]
+
+        min_similarity : typing.Optional[float]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SimilarImageMatchesSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.images.list_similar(
+                file_id="file_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_similar(
+            file_id, limit=limit, min_similarity=min_similarity, request_options=request_options
+        )
+        return _response.data
 
     async def list_annotations(
         self,
