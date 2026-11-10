@@ -1241,7 +1241,7 @@ client.jobs.update(
 Open a job execution for a script running outside the platform.
 
 Pass the returned job_execution_id to the write and upload-file tools so
-everything one script run produces is attributed to a single execution and
+everything one execution of the script produces is attributed to it and
 can be inspected or reverted as a unit. Pass job_id to run under an
 existing job, job_name to run under a job of that name (created if
 missing), or neither to run under the default off-platform job.
@@ -1381,7 +1381,7 @@ client.jobs.close(
 <dl>
 <dd>
 
-**status:** `UpdateJobExecutionStatusSchemaStatus` — How the run ended. Either status is final: the execution cannot change status afterwards.
+**status:** `UpdateJobExecutionStatusSchemaStatus` — How the execution ended. Either status is final: the execution cannot change status afterwards.
     
 </dd>
 </dl>

@@ -547,7 +547,7 @@ class RawJobsClient:
         Open a job execution for a script running outside the platform.
 
         Pass the returned job_execution_id to the write and upload-file tools so
-        everything one script run produces is attributed to a single execution and
+        everything one execution of the script produces is attributed to it and
         can be inspected or reverted as a unit. Pass job_id to run under an
         existing job, job_name to run under a job of that name (created if
         missing), or neither to run under the default off-platform job.
@@ -687,7 +687,7 @@ class RawJobsClient:
         execution_id : str
 
         status : UpdateJobExecutionStatusSchemaStatus
-            How the run ended. Either status is final: the execution cannot change status afterwards.
+            How the execution ended. Either status is final: the execution cannot change status afterwards.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1421,7 +1421,7 @@ class AsyncRawJobsClient:
         Open a job execution for a script running outside the platform.
 
         Pass the returned job_execution_id to the write and upload-file tools so
-        everything one script run produces is attributed to a single execution and
+        everything one execution of the script produces is attributed to it and
         can be inspected or reverted as a unit. Pass job_id to run under an
         existing job, job_name to run under a job of that name (created if
         missing), or neither to run under the default off-platform job.
@@ -1561,7 +1561,7 @@ class AsyncRawJobsClient:
         execution_id : str
 
         status : UpdateJobExecutionStatusSchemaStatus
-            How the run ended. Either status is final: the execution cannot change status afterwards.
+            How the execution ended. Either status is final: the execution cannot change status afterwards.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
