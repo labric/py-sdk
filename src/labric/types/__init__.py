@@ -69,6 +69,7 @@ if typing.TYPE_CHECKING:
     from .table_write_result import TableWriteResult
     from .text_item_schema import TextItemSchema
     from .tools_job_schema import ToolsJobSchema
+    from .tools_job_with_code_schema import ToolsJobWithCodeSchema
     from .tools_ml_model_detail_schema import ToolsMlModelDetailSchema
     from .tools_ml_model_detail_with_log_summary_schema import ToolsMlModelDetailWithLogSummarySchema
     from .training_log_line_schema import TrainingLogLineSchema
@@ -151,6 +152,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TableWriteResult": ".table_write_result",
     "TextItemSchema": ".text_item_schema",
     "ToolsJobSchema": ".tools_job_schema",
+    "ToolsJobWithCodeSchema": ".tools_job_with_code_schema",
     "ToolsMlModelDetailSchema": ".tools_ml_model_detail_schema",
     "ToolsMlModelDetailWithLogSummarySchema": ".tools_ml_model_detail_with_log_summary_schema",
     "TrainingLogLineSchema": ".training_log_line_schema",
@@ -257,6 +259,7 @@ __all__ = [
     "TableWriteResult",
     "TextItemSchema",
     "ToolsJobSchema",
+    "ToolsJobWithCodeSchema",
     "ToolsMlModelDetailSchema",
     "ToolsMlModelDetailWithLogSummarySchema",
     "TrainingLogLineSchema",

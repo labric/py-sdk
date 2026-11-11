@@ -12,6 +12,7 @@ from ..types.revert_result_schema import RevertResultSchema
 from ..types.script_edit_schema import ScriptEditSchema
 from ..types.start_job_execution_schema import StartJobExecutionSchema
 from ..types.tools_job_schema import ToolsJobSchema
+from ..types.tools_job_with_code_schema import ToolsJobWithCodeSchema
 from .raw_client import AsyncRawJobsClient, RawJobsClient
 from .types.update_job_execution_status_schema_status import UpdateJobExecutionStatusSchemaStatus
 
@@ -156,6 +157,41 @@ class JobsClient:
             parameter_definitions=parameter_definitions,
             request_options=request_options,
         )
+        return _response.data
+
+    def get(self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> ToolsJobWithCodeSchema:
+        """
+        Get one job with the code of its current script.
+
+        Read the code before changing part of it with update_job, whose edits
+        must match the current script exactly.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobWithCodeSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.jobs.get(
+            job_id="job_id",
+        )
+        """
+        _response = self._raw_client.get(job_id, request_options=request_options)
         return _response.data
 
     def update(
@@ -547,6 +583,51 @@ class AsyncJobsClient:
             parameter_definitions=parameter_definitions,
             request_options=request_options,
         )
+        return _response.data
+
+    async def get(
+        self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ToolsJobWithCodeSchema:
+        """
+        Get one job with the code of its current script.
+
+        Read the code before changing part of it with update_job, whose edits
+        must match the current script exactly.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobWithCodeSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.jobs.get(
+                job_id="job_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(job_id, request_options=request_options)
         return _response.data
 
     async def update(

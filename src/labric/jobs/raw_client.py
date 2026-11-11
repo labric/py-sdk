@@ -27,6 +27,7 @@ from ..types.revert_result_schema import RevertResultSchema
 from ..types.script_edit_schema import ScriptEditSchema
 from ..types.start_job_execution_schema import StartJobExecutionSchema
 from ..types.tools_job_schema import ToolsJobSchema
+from ..types.tools_job_with_code_schema import ToolsJobWithCodeSchema
 from ..types.validation_error_schema import ValidationErrorSchema
 from .types.update_job_execution_status_schema_status import UpdateJobExecutionStatusSchemaStatus
 from pydantic import ValidationError
@@ -299,6 +300,119 @@ class RawJobsClient:
                 )
             if _response.status_code == 409:
                 raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get(
+        self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[ToolsJobWithCodeSchema]:
+        """
+        Get one job with the code of its current script.
+
+        Read the code before changing part of it with update_job, whose edits
+        must match the current script exactly.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ToolsJobWithCodeSchema]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"api/v1/jobs/{encode_path_param(job_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolsJobWithCodeSchema,
+                    parse_obj_as(
+                        type_=ToolsJobWithCodeSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -1173,6 +1287,119 @@ class AsyncRawJobsClient:
                 )
             if _response.status_code == 409:
                 raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get(
+        self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[ToolsJobWithCodeSchema]:
+        """
+        Get one job with the code of its current script.
+
+        Read the code before changing part of it with update_job, whose edits
+        must match the current script exactly.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ToolsJobWithCodeSchema]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"api/v1/jobs/{encode_path_param(job_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolsJobWithCodeSchema,
+                    parse_obj_as(
+                        type_=ToolsJobWithCodeSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
