@@ -63,6 +63,7 @@ if typing.TYPE_CHECKING:
     from .similar_image_matches_schema import SimilarImageMatchesSchema
     from .start_job_execution_schema import StartJobExecutionSchema
     from .table_summary import TableSummary
+    from .table_summary_schema import TableSummarySchema
     from .table_write import TableWrite
     from .table_write_mode import TableWriteMode
     from .table_write_on_match import TableWriteOnMatch
@@ -146,6 +147,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SimilarImageMatchesSchema": ".similar_image_matches_schema",
     "StartJobExecutionSchema": ".start_job_execution_schema",
     "TableSummary": ".table_summary",
+    "TableSummarySchema": ".table_summary_schema",
     "TableWrite": ".table_write",
     "TableWriteMode": ".table_write_mode",
     "TableWriteOnMatch": ".table_write_on_match",
@@ -253,6 +255,7 @@ __all__ = [
     "SimilarImageMatchesSchema",
     "StartJobExecutionSchema",
     "TableSummary",
+    "TableSummarySchema",
     "TableWrite",
     "TableWriteMode",
     "TableWriteOnMatch",

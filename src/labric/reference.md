@@ -3376,7 +3376,7 @@ client.data.query(
 </dl>
 </details>
 
-<details><summary><code>client.data.<a href="src/labric/data/client.py">get_schema</a>() -> typing.List[QueryableTableSchema]</code></summary>
+<details><summary><code>client.data.<a href="src/labric/data/client.py">get_schema</a>(...) -> typing.List[QueryableTableSchema]</code></summary>
 <dl>
 <dd>
 
@@ -3402,6 +3402,9 @@ core_user, which holds the org's members; those have no id or semantic
 category. This is the map a parser writes into: use it to plan which tables
 to populate and how rows link.
 
+The full schema is large. Call list_tables first, then pass tables to
+describe only the tables a task needs.
+
 Requires an API key with the `read` scope.
 </dd>
 </dl>
@@ -3426,6 +3429,85 @@ client = Labric(
 )
 
 client.data.get_schema()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**tables:** `typing.Optional[typing.List[str]]` — Names of the tables to describe, as list_tables returns them. Omit to describe every table.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.data.<a href="src/labric/data/client.py">list_tables</a>() -> typing.List[TableSummarySchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the tables SQL queries can target, without their columns.
+
+Returns each table's name, semantic category, description, and column
+count: the org's own tables first, then the platform tables
+(core_experiment, core_instrument, and similar). Call this first to find
+the tables a task needs, then pass their names to get_schema for the
+columns.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.data.list_tables()
 
 ```
 </dd>

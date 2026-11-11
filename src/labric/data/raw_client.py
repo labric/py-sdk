@@ -22,6 +22,7 @@ from ..types.error_schema import ErrorSchema
 from ..types.query_result import QueryResult
 from ..types.queryable_table_schema import QueryableTableSchema
 from ..types.series_write import SeriesWrite
+from ..types.table_summary_schema import TableSummarySchema
 from ..types.table_write import TableWrite
 from ..types.validation_error_schema import ValidationErrorSchema
 from ..types.write_data_response import WriteDataResponse
@@ -380,7 +381,10 @@ class RawDataClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        tables: typing.Optional[typing.Sequence[str]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[QueryableTableSchema]]:
         """
         Describe the organization's data schema.
@@ -397,10 +401,16 @@ class RawDataClient:
         category. This is the map a parser writes into: use it to plan which tables
         to populate and how rows link.
 
+        The full schema is large. Call list_tables first, then pass tables to
+        describe only the tables a task needs.
+
         Requires an API key with the `read` scope.
 
         Parameters
         ----------
+        tables : typing.Optional[typing.Sequence[str]]
+            Names of the tables to describe, as list_tables returns them. Omit to describe every table.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -412,6 +422,9 @@ class RawDataClient:
         _response = self._client_wrapper.httpx_client.request(
             "api/v1/data/schema",
             method="GET",
+            params={
+                "tables": tables,
+            },
             request_options=request_options,
         )
         try:
@@ -420,6 +433,120 @@ class RawDataClient:
                     typing.List[QueryableTableSchema],
                     parse_obj_as(
                         type_=typing.List[QueryableTableSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_tables(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[typing.List[TableSummarySchema]]:
+        """
+        List the tables SQL queries can target, without their columns.
+
+        Returns each table's name, semantic category, description, and column
+        count: the org's own tables first, then the platform tables
+        (core_experiment, core_instrument, and similar). Call this first to find
+        the tables a task needs, then pass their names to get_schema for the
+        columns.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[TableSummarySchema]]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/data/tables",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[TableSummarySchema],
+                    parse_obj_as(
+                        type_=typing.List[TableSummarySchema],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -849,7 +976,10 @@ class AsyncRawDataClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        tables: typing.Optional[typing.Sequence[str]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[QueryableTableSchema]]:
         """
         Describe the organization's data schema.
@@ -866,10 +996,16 @@ class AsyncRawDataClient:
         category. This is the map a parser writes into: use it to plan which tables
         to populate and how rows link.
 
+        The full schema is large. Call list_tables first, then pass tables to
+        describe only the tables a task needs.
+
         Requires an API key with the `read` scope.
 
         Parameters
         ----------
+        tables : typing.Optional[typing.Sequence[str]]
+            Names of the tables to describe, as list_tables returns them. Omit to describe every table.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -881,6 +1017,9 @@ class AsyncRawDataClient:
         _response = await self._client_wrapper.httpx_client.request(
             "api/v1/data/schema",
             method="GET",
+            params={
+                "tables": tables,
+            },
             request_options=request_options,
         )
         try:
@@ -889,6 +1028,120 @@ class AsyncRawDataClient:
                     typing.List[QueryableTableSchema],
                     parse_obj_as(
                         type_=typing.List[QueryableTableSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Any,
+                        parse_obj_as(
+                            type_=typing.Any,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_tables(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[typing.List[TableSummarySchema]]:
+        """
+        List the tables SQL queries can target, without their columns.
+
+        Returns each table's name, semantic category, description, and column
+        count: the org's own tables first, then the platform tables
+        (core_experiment, core_instrument, and similar). Call this first to find
+        the tables a task needs, then pass their names to get_schema for the
+        columns.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[TableSummarySchema]]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/data/tables",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[TableSummarySchema],
+                    parse_obj_as(
+                        type_=typing.List[TableSummarySchema],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

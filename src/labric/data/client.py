@@ -7,6 +7,7 @@ from ..core.request_options import RequestOptions
 from ..types.query_result import QueryResult
 from ..types.queryable_table_schema import QueryableTableSchema
 from ..types.series_write import SeriesWrite
+from ..types.table_summary_schema import TableSummarySchema
 from ..types.table_write import TableWrite
 from ..types.write_data_response import WriteDataResponse
 from .raw_client import AsyncRawDataClient, RawDataClient
@@ -183,7 +184,10 @@ class DataClient:
         return _response.data
 
     def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        tables: typing.Optional[typing.Sequence[str]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[QueryableTableSchema]:
         """
         Describe the organization's data schema.
@@ -200,10 +204,16 @@ class DataClient:
         category. This is the map a parser writes into: use it to plan which tables
         to populate and how rows link.
 
+        The full schema is large. Call list_tables first, then pass tables to
+        describe only the tables a task needs.
+
         Requires an API key with the `read` scope.
 
         Parameters
         ----------
+        tables : typing.Optional[typing.Sequence[str]]
+            Names of the tables to describe, as list_tables returns them. Omit to describe every table.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -221,7 +231,43 @@ class DataClient:
         )
         client.data.get_schema()
         """
-        _response = self._raw_client.get_schema(request_options=request_options)
+        _response = self._raw_client.get_schema(tables=tables, request_options=request_options)
+        return _response.data
+
+    def list_tables(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[TableSummarySchema]:
+        """
+        List the tables SQL queries can target, without their columns.
+
+        Returns each table's name, semantic category, description, and column
+        count: the org's own tables first, then the platform tables
+        (core_experiment, core_instrument, and similar). Call this first to find
+        the tables a task needs, then pass their names to get_schema for the
+        columns.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[TableSummarySchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.data.list_tables()
+        """
+        _response = self._raw_client.list_tables(request_options=request_options)
         return _response.data
 
 
@@ -409,7 +455,10 @@ class AsyncDataClient:
         return _response.data
 
     async def get_schema(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        tables: typing.Optional[typing.Sequence[str]] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[QueryableTableSchema]:
         """
         Describe the organization's data schema.
@@ -426,10 +475,16 @@ class AsyncDataClient:
         category. This is the map a parser writes into: use it to plan which tables
         to populate and how rows link.
 
+        The full schema is large. Call list_tables first, then pass tables to
+        describe only the tables a task needs.
+
         Requires an API key with the `read` scope.
 
         Parameters
         ----------
+        tables : typing.Optional[typing.Sequence[str]]
+            Names of the tables to describe, as list_tables returns them. Omit to describe every table.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -455,5 +510,49 @@ class AsyncDataClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_schema(request_options=request_options)
+        _response = await self._raw_client.get_schema(tables=tables, request_options=request_options)
+        return _response.data
+
+    async def list_tables(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[TableSummarySchema]:
+        """
+        List the tables SQL queries can target, without their columns.
+
+        Returns each table's name, semantic category, description, and column
+        count: the org's own tables first, then the platform tables
+        (core_experiment, core_instrument, and similar). Call this first to find
+        the tables a task needs, then pass their names to get_schema for the
+        columns.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[TableSummarySchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.data.list_tables()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_tables(request_options=request_options)
         return _response.data
