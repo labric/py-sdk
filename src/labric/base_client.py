@@ -22,6 +22,7 @@ if typing.TYPE_CHECKING:
     from .jobs.client import AsyncJobsClient, JobsClient
     from .models.client import AsyncModelsClient, ModelsClient
     from .notifications.client import AsyncNotificationsClient, NotificationsClient
+    from .organization.client import AsyncOrganizationClient, OrganizationClient
     from .tools.client import AsyncToolsClient, ToolsClient
     from .visualizations.client import AsyncVisualizationsClient, VisualizationsClient
 
@@ -125,6 +126,7 @@ class BaseLabric:
         self._data: typing.Optional[DataClient] = None
         self._dashboards: typing.Optional[DashboardsClient] = None
         self._notifications: typing.Optional[NotificationsClient] = None
+        self._organization: typing.Optional[OrganizationClient] = None
         self._models: typing.Optional[ModelsClient] = None
 
     @property
@@ -214,6 +216,14 @@ class BaseLabric:
 
             self._notifications = NotificationsClient(client_wrapper=self._client_wrapper)
         return self._notifications
+
+    @property
+    def organization(self):
+        if self._organization is None:
+            from .organization.client import OrganizationClient  # noqa: E402
+
+            self._organization = OrganizationClient(client_wrapper=self._client_wrapper)
+        return self._organization
 
     @property
     def models(self):
@@ -344,6 +354,7 @@ class AsyncBaseLabric:
         self._data: typing.Optional[AsyncDataClient] = None
         self._dashboards: typing.Optional[AsyncDashboardsClient] = None
         self._notifications: typing.Optional[AsyncNotificationsClient] = None
+        self._organization: typing.Optional[AsyncOrganizationClient] = None
         self._models: typing.Optional[AsyncModelsClient] = None
 
     @property
@@ -433,6 +444,14 @@ class AsyncBaseLabric:
 
             self._notifications = AsyncNotificationsClient(client_wrapper=self._client_wrapper)
         return self._notifications
+
+    @property
+    def organization(self):
+        if self._organization is None:
+            from .organization.client import AsyncOrganizationClient  # noqa: E402
+
+            self._organization = AsyncOrganizationClient(client_wrapper=self._client_wrapper)
+        return self._organization
 
     @property
     def models(self):

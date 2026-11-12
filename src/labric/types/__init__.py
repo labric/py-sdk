@@ -18,6 +18,7 @@ if typing.TYPE_CHECKING:
     from .batch_write_options import BatchWriteOptions
     from .batch_write_options_mode import BatchWriteOptionsMode
     from .batch_write_response import BatchWriteResponse
+    from .capped_query_result import CappedQueryResult
     from .create_visualization_schema import CreateVisualizationSchema
     from .current_device_status_schema import CurrentDeviceStatusSchema
     from .current_device_status_schema_value import CurrentDeviceStatusSchemaValue
@@ -30,6 +31,7 @@ if typing.TYPE_CHECKING:
     from .device_status_schema_status import DeviceStatusSchemaStatus
     from .device_status_type import DeviceStatusType
     from .error_schema import ErrorSchema
+    from .external_organization_schema import ExternalOrganizationSchema
     from .file_content_schema import FileContentSchema
     from .file_info_schema import FileInfoSchema
     from .file_upload_schema import FileUploadSchema
@@ -48,7 +50,6 @@ if typing.TYPE_CHECKING:
     from .predicted_annotation_schema import PredictedAnnotationSchema
     from .publish_status import PublishStatus
     from .quality_preset import QualityPreset
-    from .query_result import QueryResult
     from .queryable_column_schema import QueryableColumnSchema
     from .queryable_table_schema import QueryableTableSchema
     from .revert_result_schema import RevertResultSchema
@@ -102,6 +103,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteOptions": ".batch_write_options",
     "BatchWriteOptionsMode": ".batch_write_options_mode",
     "BatchWriteResponse": ".batch_write_response",
+    "CappedQueryResult": ".capped_query_result",
     "CreateVisualizationSchema": ".create_visualization_schema",
     "CurrentDeviceStatusSchema": ".current_device_status_schema",
     "CurrentDeviceStatusSchemaValue": ".current_device_status_schema_value",
@@ -114,6 +116,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "DeviceStatusSchemaStatus": ".device_status_schema_status",
     "DeviceStatusType": ".device_status_type",
     "ErrorSchema": ".error_schema",
+    "ExternalOrganizationSchema": ".external_organization_schema",
     "FileContentSchema": ".file_content_schema",
     "FileInfoSchema": ".file_info_schema",
     "FileUploadSchema": ".file_upload_schema",
@@ -132,7 +135,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "PredictedAnnotationSchema": ".predicted_annotation_schema",
     "PublishStatus": ".publish_status",
     "QualityPreset": ".quality_preset",
-    "QueryResult": ".query_result",
     "QueryableColumnSchema": ".queryable_column_schema",
     "QueryableTableSchema": ".queryable_table_schema",
     "RevertResultSchema": ".revert_result_schema",
@@ -210,6 +212,7 @@ __all__ = [
     "BatchWriteOptions",
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
+    "CappedQueryResult",
     "CreateVisualizationSchema",
     "CurrentDeviceStatusSchema",
     "CurrentDeviceStatusSchemaValue",
@@ -222,6 +225,7 @@ __all__ = [
     "DeviceStatusSchemaStatus",
     "DeviceStatusType",
     "ErrorSchema",
+    "ExternalOrganizationSchema",
     "FileContentSchema",
     "FileInfoSchema",
     "FileUploadSchema",
@@ -240,7 +244,6 @@ __all__ = [
     "PredictedAnnotationSchema",
     "PublishStatus",
     "QualityPreset",
-    "QueryResult",
     "QueryableColumnSchema",
     "QueryableTableSchema",
     "RevertResultSchema",

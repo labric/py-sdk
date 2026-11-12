@@ -3284,7 +3284,7 @@ client.data.write()
 </dl>
 </details>
 
-<details><summary><code>client.data.<a href="src/labric/data/client.py">query</a>(...) -> QueryResult</code></summary>
+<details><summary><code>client.data.<a href="src/labric/data/client.py">query</a>(...) -> CappedQueryResult</code></summary>
 <dl>
 <dd>
 
@@ -3298,14 +3298,19 @@ client.data.write()
 
 Execute a read-only SQL query.
 
-Runs the query against the organization's read replica, so it cannot
-mutate data. Only SELECT statements are accepted. Supports positional
+Runs the query as PostgreSQL against the organization's read replica, so
+it cannot mutate data. Only SELECT statements are accepted. Supports positional
 parameters: write %s placeholders in the query and pass the values in
 order in the params list. Named :param placeholders belong to saved
 dataset queries and are not accepted here. Use the schema tool to discover tables
 first, and reference each column by its sql_column_name — foreign keys
 carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
 column).
+
+A query is cancelled after 90 seconds.
+At most 10,000 rows are returned, and truncated is true when the
+query produced more. Aggregate, filter, or page with LIMIT and OFFSET to keep
+a result within that.
 
 Requires an API key with the `read` scope.
 </dd>
@@ -3390,8 +3395,8 @@ client.data.query(
 
 Describe the organization's data schema.
 
-Returns every table the agent can target, including its semantic category
-(e.g. raw vs. curated), description, and full column definitions with types,
+Returns the tables SQL queries can target, each with its semantic category
+(e.g. raw vs. curated), description, and column definitions with types,
 nullability, uniqueness, and foreign-key targets. Each column carries two
 names: 'name' is what the read and write tools accept, and 'sql_column_name'
 is the physical column for SQL queries (a column holding another row's key
@@ -3399,11 +3404,13 @@ carries an _id suffix).
 The org's own tables are followed by the platform tables (core_experiment,
 core_instrument, and similar) that SQL queries can join against, ending with
 core_user, which holds the org's members; those have no id or semantic
-category. This is the map a parser writes into: use it to plan which tables
-to populate and how rows link.
+category. Use it to write queries and to plan which tables a job populates
+and how rows link.
 
 The full schema is large. Call list_tables first, then pass tables to
 describe only the tables a task needs.
+
+Fields that are null and flags that are false are omitted.
 
 Requires an API key with the `read` scope.
 </dd>
@@ -3480,8 +3487,8 @@ List the tables SQL queries can target, without their columns.
 
 Returns each table's name, semantic category, description, column count,
 and the tables its foreign keys reference: the org's own tables first, then
-the platform tables (core_experiment, core_instrument, and similar). Call
-this first to find the tables a task needs and how they join, then pass
+the platform tables (core_experiment, core_instrument, and similar), whose
+descriptions are cut to one line. Call this first to find the tables a task needs and how they join, then pass
 their names to get_schema for the columns.
 
 Requires an API key with the `read` scope.
@@ -4065,6 +4072,75 @@ client.notifications.send(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## organization
+<details><summary><code>client.organization.<a href="src/labric/organization/client.py">get</a>() -> ExternalOrganizationSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the organization the caller's credential is scoped to.
+
+Every other call reads and writes this organization's data. Call this to
+confirm the organization before acting on a request that names one.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.organization.get()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
 
 <dl>
 <dd>

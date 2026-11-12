@@ -9,6 +9,8 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 class QueryableColumnSchema(UniversalBaseModel):
     """
     A column of a queryable table. Platform table columns have no id.
+
+    get_schema omits a flag that is false.
     """
 
     id: typing.Optional[int] = None
@@ -16,10 +18,10 @@ class QueryableColumnSchema(UniversalBaseModel):
     sql_column_name: str
     description: typing.Optional[str] = None
     data_type: str
-    is_primary_key: bool
-    is_foreign_key: bool
-    is_nullable: bool
-    is_unique: bool
+    is_primary_key: typing.Optional[bool] = None
+    is_foreign_key: typing.Optional[bool] = None
+    is_nullable: typing.Optional[bool] = None
+    is_unique: typing.Optional[bool] = None
     foreign_key_table_name: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
