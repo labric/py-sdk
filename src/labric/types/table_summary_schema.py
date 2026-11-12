@@ -19,6 +19,10 @@ class TableSummarySchema(UniversalBaseModel):
     semantic_category: typing.Optional[str] = None
     description: typing.Optional[str] = None
     column_count: int
+    references: typing.List[str] = pydantic.Field()
+    """
+    Names of the tables this table's foreign keys point to.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

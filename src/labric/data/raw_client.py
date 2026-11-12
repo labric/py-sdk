@@ -518,11 +518,11 @@ class RawDataClient:
         """
         List the tables SQL queries can target, without their columns.
 
-        Returns each table's name, semantic category, description, and column
-        count: the org's own tables first, then the platform tables
-        (core_experiment, core_instrument, and similar). Call this first to find
-        the tables a task needs, then pass their names to get_schema for the
-        columns.
+        Returns each table's name, semantic category, description, column count,
+        and the tables its foreign keys reference: the org's own tables first, then
+        the platform tables (core_experiment, core_instrument, and similar). Call
+        this first to find the tables a task needs and how they join, then pass
+        their names to get_schema for the columns.
 
         Requires an API key with the `read` scope.
 
@@ -1113,11 +1113,11 @@ class AsyncRawDataClient:
         """
         List the tables SQL queries can target, without their columns.
 
-        Returns each table's name, semantic category, description, and column
-        count: the org's own tables first, then the platform tables
-        (core_experiment, core_instrument, and similar). Call this first to find
-        the tables a task needs, then pass their names to get_schema for the
-        columns.
+        Returns each table's name, semantic category, description, column count,
+        and the tables its foreign keys reference: the org's own tables first, then
+        the platform tables (core_experiment, core_instrument, and similar). Call
+        this first to find the tables a task needs and how they join, then pass
+        their names to get_schema for the columns.
 
         Requires an API key with the `read` scope.
 
