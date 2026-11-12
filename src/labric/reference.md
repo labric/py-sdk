@@ -2847,14 +2847,16 @@ client.tools.batch_write(
 List the organization's images that look most like an image, most
 similar first.
 
-Each result has a similarity from -1 to 1, where higher means more alike,
-and a signed thumbnail_url. Signed URLs expire, so download thumbnails soon
-after listing them. Pass min_similarity to leave out weaker matches.
-Similarity values can change when the platform updates how it compares
-images, so use them to rank results and not as stored thresholds.
+Each result has a similarity from -1 to 1, where higher means more alike.
+Pass min_similarity to leave out weaker matches. Similarity values can
+change when the platform updates how it compares images, so use them to
+rank results and not as stored thresholds.
 
-The file must be a processed image. Returns 409 when the image has not
-been analyzed for similarity.
+The file must be a processed image that has been analyzed for similarity.
+
+Each result also has a signed thumbnail_url. Signed URLs expire, so download
+thumbnails soon after listing them. Returns 409 when the image has not been
+analyzed for similarity.
 
 Requires an API key with the `read` scope.
 </dd>
