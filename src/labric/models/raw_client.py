@@ -723,8 +723,8 @@ class RawModelsClient:
 
         To train a new model, pass name and omit ml_model_id. To retrain, pass
         ml_model_id and omit name; the model keeps its name and gains a new
-        version. dataset_id and target_column are always required, and every
-        column must exist in the dataset. Training runs in the background;
+        version. For dataset training, pass dataset_id and target_column. Every
+        named column must exist in the dataset. Training runs in the background;
         check its progress with get_ml_model.
 
         Requires an API key with the `write` scope.
@@ -1679,8 +1679,8 @@ class AsyncRawModelsClient:
 
         To train a new model, pass name and omit ml_model_id. To retrain, pass
         ml_model_id and omit name; the model keeps its name and gains a new
-        version. dataset_id and target_column are always required, and every
-        column must exist in the dataset. Training runs in the background;
+        version. For dataset training, pass dataset_id and target_column. Every
+        named column must exist in the dataset. Training runs in the background;
         check its progress with get_ml_model.
 
         Requires an API key with the `write` scope.
