@@ -477,8 +477,9 @@ class RawJobsClient:
         Only the fields passed are changed. To change part of the script, pass
         edits: exact replacements of text in the current script. Pass code only to
         replace the whole script. New code is stored as a new version of the job's
-        script, so earlier executions keep the version they ran. To create a job,
-        use create_job instead.
+        script, so earlier executions keep the version they ran. The returned
+        script_version is the current version. To create a job, use create_job
+        instead.
 
         Requires an API key with the `write` scope.
 
@@ -1464,8 +1465,9 @@ class AsyncRawJobsClient:
         Only the fields passed are changed. To change part of the script, pass
         edits: exact replacements of text in the current script. Pass code only to
         replace the whole script. New code is stored as a new version of the job's
-        script, so earlier executions keep the version they ran. To create a job,
-        use create_job instead.
+        script, so earlier executions keep the version they ran. The returned
+        script_version is the current version. To create a job, use create_job
+        instead.
 
         Requires an API key with the `write` scope.
 

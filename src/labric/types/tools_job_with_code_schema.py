@@ -29,14 +29,14 @@ class ToolsJobWithCodeSchema(UniversalBaseModel):
 
     trigger: typing.Optional[JobTriggerSchema] = None
     parameter_definitions: typing.Optional[typing.List[ParameterDefinitionSchema]] = None
+    script_version: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Revision number of the job's current script, starting at 1. Each code change stores a new script and adds one.
+    """
+
     code: typing.Optional[str] = pydantic.Field(default=None)
     """
     Python source of the job's current script. update_job edits match against this text.
-    """
-
-    script_version: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Version of the current script. Each code change stores a new version.
     """
 
     if IS_PYDANTIC_V2:

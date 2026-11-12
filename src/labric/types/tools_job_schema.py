@@ -29,6 +29,10 @@ class ToolsJobSchema(UniversalBaseModel):
 
     trigger: typing.Optional[JobTriggerSchema] = None
     parameter_definitions: typing.Optional[typing.List[ParameterDefinitionSchema]] = None
+    script_version: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Revision number of the job's current script, starting at 1. Each code change stores a new script and adds one.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
