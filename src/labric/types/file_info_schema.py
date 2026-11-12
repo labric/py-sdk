@@ -14,7 +14,7 @@ class FileInfoSchema(UniversalBaseModel):
 
     file_id: str = pydantic.Field()
     """
-    The file's ID, for use with the file-content tool.
+    The file's ID, for use with get_file_content.
     """
 
     original_path: typing.Optional[str] = pydantic.Field(default=None)
@@ -45,6 +45,11 @@ class FileInfoSchema(UniversalBaseModel):
     file_created_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
     """
     When the source file was created, if known.
+    """
+
+    image_processing_status: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Processing status of the file's image: pending, processing, completed, or failed. Null when the file is not an image.
     """
 
     if IS_PYDANTIC_V2:
