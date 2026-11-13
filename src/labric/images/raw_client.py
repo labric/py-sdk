@@ -624,6 +624,144 @@ class RawImagesClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    @contextlib.contextmanager
+    def view_annotation(
+        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.Iterator[HttpResponse[typing.Iterator[bytes]]]:
+        """
+        Look at one saved annotation to judge whether its mask is right.
+
+        Returns a webp of a square of the image around the annotation, with the
+        mask's painted area tinted orange. A small annotation is enlarged to 256
+        pixels across. The X-Image-View response header describes the view, and
+        its summary says when the annotation is too long to fit in the square.
+        Pass its region to view_image to see the same square without the tint.
+        Get annotation ids from get_image_annotations. Returns 400 for an
+        annotation that cannot be shown, such as one whose mask is empty.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        annotation_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[HttpResponse[typing.Iterator[bytes]]]
+            The view as a webp
+        """
+        with self._client_wrapper.httpx_client.stream(
+            f"api/v1/images/{encode_path_param(file_id)}/annotations/{encode_path_param(annotation_id)}/view",
+            method="GET",
+            request_options=request_options,
+        ) as _response:
+
+            def _stream() -> HttpResponse[typing.Iterator[bytes]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+                        _chunk_size = request_options.get("chunk_size", None) if request_options is not None else None
+                        return HttpResponse(
+                            response=_response, data=(_chunk for _chunk in _response.iter_bytes(chunk_size=_chunk_size))
+                        )
+                    _response.read()
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                typing.Any,
+                                parse_obj_as(
+                                    type_=typing.Any,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 401:
+                        raise UnauthorizedError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 403:
+                        raise ForbiddenError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 422:
+                        raise UnprocessableEntityError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ValidationErrorSchema,
+                                parse_obj_as(
+                                    type_=ValidationErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise InternalServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 502:
+                        raise BadGatewayError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                except ValidationError as e:
+                    raise ParsingError(
+                        status_code=_response.status_code,
+                        headers=dict(_response.headers),
+                        body=_response.json(),
+                        cause=e,
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield _stream()
+
 
 class AsyncRawImagesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1218,3 +1356,142 @@ class AsyncRawImagesClient:
                 status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    @contextlib.asynccontextmanager
+    async def view_annotation(
+        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[bytes]]]:
+        """
+        Look at one saved annotation to judge whether its mask is right.
+
+        Returns a webp of a square of the image around the annotation, with the
+        mask's painted area tinted orange. A small annotation is enlarged to 256
+        pixels across. The X-Image-View response header describes the view, and
+        its summary says when the annotation is too long to fit in the square.
+        Pass its region to view_image to see the same square without the tint.
+        Get annotation ids from get_image_annotations. Returns 400 for an
+        annotation that cannot be shown, such as one whose mask is empty.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        annotation_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[bytes]]]
+            The view as a webp
+        """
+        async with self._client_wrapper.httpx_client.stream(
+            f"api/v1/images/{encode_path_param(file_id)}/annotations/{encode_path_param(annotation_id)}/view",
+            method="GET",
+            request_options=request_options,
+        ) as _response:
+
+            async def _stream() -> AsyncHttpResponse[typing.AsyncIterator[bytes]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+                        _chunk_size = request_options.get("chunk_size", None) if request_options is not None else None
+                        return AsyncHttpResponse(
+                            response=_response,
+                            data=(_chunk async for _chunk in _response.aiter_bytes(chunk_size=_chunk_size)),
+                        )
+                    await _response.aread()
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                typing.Any,
+                                parse_obj_as(
+                                    type_=typing.Any,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 401:
+                        raise UnauthorizedError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 403:
+                        raise ForbiddenError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 422:
+                        raise UnprocessableEntityError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ValidationErrorSchema,
+                                parse_obj_as(
+                                    type_=ValidationErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise InternalServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 502:
+                        raise BadGatewayError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorSchema,
+                                parse_obj_as(
+                                    type_=ErrorSchema,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                except ValidationError as e:
+                    raise ParsingError(
+                        status_code=_response.status_code,
+                        headers=dict(_response.headers),
+                        body=_response.json(),
+                        cause=e,
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield await _stream()

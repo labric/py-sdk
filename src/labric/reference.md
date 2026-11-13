@@ -3265,6 +3265,98 @@ client.images.annotate(
 </dl>
 </details>
 
+<details><summary><code>client.images.<a href="src/labric/images/client.py">view_annotation</a>(...) -> typing.Iterator[bytes]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Look at one saved annotation to judge whether its mask is right.
+
+Returns a webp of a square of the image around the annotation, with the
+mask's painted area tinted orange. A small annotation is enlarged to 256
+pixels across. The X-Image-View response header describes the view, and
+its summary says when the annotation is too long to fit in the square.
+Pass its region to view_image to see the same square without the tint.
+Get annotation ids from get_image_annotations. Returns 400 for an
+annotation that cannot be shown, such as one whose mask is empty.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.images.view_annotation(
+    file_id="file_id",
+    annotation_id="annotation_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**annotation_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## data
 <details><summary><code>client.data.<a href="src/labric/data/client.py">write</a>(...) -> WriteDataResponse</code></summary>
 <dl>

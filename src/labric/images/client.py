@@ -261,6 +261,51 @@ class ImagesClient:
         )
         return _response.data
 
+    def view_annotation(
+        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.Iterator[bytes]:
+        """
+        Look at one saved annotation to judge whether its mask is right.
+
+        Returns a webp of a square of the image around the annotation, with the
+        mask's painted area tinted orange. A small annotation is enlarged to 256
+        pixels across. The X-Image-View response header describes the view, and
+        its summary says when the annotation is too long to fit in the square.
+        Pass its region to view_image to see the same square without the tint.
+        Get annotation ids from get_image_annotations. Returns 400 for an
+        annotation that cannot be shown, such as one whose mask is empty.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        annotation_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[bytes]
+            The view as a webp
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.images.view_annotation(
+            file_id="file_id",
+            annotation_id="annotation_id",
+        )
+        """
+        with self._raw_client.view_annotation(file_id, annotation_id, request_options=request_options) as r:
+            yield from r.data
+
 
 class AsyncImagesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -544,3 +589,57 @@ class AsyncImagesClient:
             file_id, annotations=annotations, job_execution_id=job_execution_id, request_options=request_options
         )
         return _response.data
+
+    async def view_annotation(
+        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.AsyncIterator[bytes]:
+        """
+        Look at one saved annotation to judge whether its mask is right.
+
+        Returns a webp of a square of the image around the annotation, with the
+        mask's painted area tinted orange. A small annotation is enlarged to 256
+        pixels across. The X-Image-View response header describes the view, and
+        its summary says when the annotation is too long to fit in the square.
+        Pass its region to view_image to see the same square without the tint.
+        Get annotation ids from get_image_annotations. Returns 400 for an
+        annotation that cannot be shown, such as one whose mask is empty.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        annotation_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[bytes]
+            The view as a webp
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.images.view_annotation(
+                file_id="file_id",
+                annotation_id="annotation_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.view_annotation(file_id, annotation_id, request_options=request_options) as r:
+            async for _chunk in r.data:
+                yield _chunk
