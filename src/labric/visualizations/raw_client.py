@@ -316,6 +316,8 @@ class RawVisualizationsClient:
         self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[VisualizationSchema]:
         """
+        Returns the visualization with its specification and dataset.
+
         Requires an API key with the `read` scope.
 
         Parameters
@@ -964,6 +966,8 @@ class AsyncRawVisualizationsClient:
         self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[VisualizationSchema]:
         """
+        Returns the visualization with its specification and dataset.
+
         Requires an API key with the `read` scope.
 
         Parameters

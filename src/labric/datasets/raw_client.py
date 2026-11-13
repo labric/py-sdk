@@ -307,6 +307,8 @@ class RawDatasetsClient:
         self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[DatasetSchema]:
         """
+        Returns the dataset with its query and default parameters.
+
         Requires an API key with the `read` scope.
 
         Parameters
@@ -959,6 +961,8 @@ class AsyncRawDatasetsClient:
         self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[DatasetSchema]:
         """
+        Returns the dataset with its query and default parameters.
+
         Requires an API key with the `read` scope.
 
         Parameters

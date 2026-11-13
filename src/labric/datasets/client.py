@@ -130,6 +130,8 @@ class DatasetsClient:
 
     def get(self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> DatasetSchema:
         """
+        Returns the dataset with its query and default parameters.
+
         Requires an API key with the `read` scope.
 
         Parameters
@@ -393,6 +395,8 @@ class AsyncDatasetsClient:
 
     async def get(self, dataset_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> DatasetSchema:
         """
+        Returns the dataset with its query and default parameters.
+
         Requires an API key with the `read` scope.
 
         Parameters

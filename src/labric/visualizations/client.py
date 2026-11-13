@@ -142,6 +142,8 @@ class VisualizationsClient:
         self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> VisualizationSchema:
         """
+        Returns the visualization with its specification and dataset.
+
         Requires an API key with the `read` scope.
 
         Parameters
@@ -416,6 +418,8 @@ class AsyncVisualizationsClient:
         self, visualization_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> VisualizationSchema:
         """
+        Returns the visualization with its specification and dataset.
+
         Requires an API key with the `read` scope.
 
         Parameters

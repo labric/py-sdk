@@ -1734,6 +1734,8 @@ client.visualizations.create(
 <dl>
 <dd>
 
+Returns the visualization with its specification and dataset.
+
 Requires an API key with the `read` scope.
 </dd>
 </dl>
@@ -2182,6 +2184,8 @@ client.datasets.create(
 
 <dl>
 <dd>
+
+Returns the dataset with its query and default parameters.
 
 Requires an API key with the `read` scope.
 </dd>
