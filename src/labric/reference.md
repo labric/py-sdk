@@ -2940,6 +2940,133 @@ client.images.list_similar(
 </dl>
 </details>
 
+<details><summary><code>client.images.<a href="src/labric/images/client.py">view</a>(...) -> typing.Iterator[bytes]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Look at an uploaded image file so you can describe, compare, or answer
+questions about its content. Only works on image files the platform has
+finished processing, which list_files reports with an
+image_processing_status of completed. Select the user's Frame N with
+frame_index=N-1. The default index 0 selects Frame 1.
+
+With no region it shows the whole image, downscaled to fit. To zoom in,
+pass a region in the original image's pixel coordinates: x and y are its
+top-left corner, and width and height default to the rest of the image.
+Smaller regions are shown at higher resolution, up to the original pixels.
+
+Returns the view as a webp, which the X-Image-View response header
+describes.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.images.view(
+    file_id="file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**x:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**y:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**width:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**height:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**frame_index:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.images.<a href="src/labric/images/client.py">list_annotations</a>(...) -> typing.List[AnnotationSchema]</code></summary>
 <dl>
 <dd>

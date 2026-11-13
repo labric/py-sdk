@@ -85,6 +85,72 @@ class ImagesClient:
         )
         return _response.data
 
+    def view(
+        self,
+        file_id: str,
+        *,
+        x: typing.Optional[int] = None,
+        y: typing.Optional[int] = None,
+        width: typing.Optional[int] = None,
+        height: typing.Optional[int] = None,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[bytes]:
+        """
+        Look at an uploaded image file so you can describe, compare, or answer
+        questions about its content. Only works on image files the platform has
+        finished processing, which list_files reports with an
+        image_processing_status of completed. Select the user's Frame N with
+        frame_index=N-1. The default index 0 selects Frame 1.
+
+        With no region it shows the whole image, downscaled to fit. To zoom in,
+        pass a region in the original image's pixel coordinates: x and y are its
+        top-left corner, and width and height default to the rest of the image.
+        Smaller regions are shown at higher resolution, up to the original pixels.
+
+        Returns the view as a webp, which the X-Image-View response header
+        describes.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        x : typing.Optional[int]
+
+        y : typing.Optional[int]
+
+        width : typing.Optional[int]
+
+        height : typing.Optional[int]
+
+        frame_index : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[bytes]
+            The view as a webp
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.images.view(
+            file_id="file_id",
+        )
+        """
+        with self._raw_client.view(
+            file_id, x=x, y=y, width=width, height=height, frame_index=frame_index, request_options=request_options
+        ) as r:
+            yield from r.data
+
     def list_annotations(
         self,
         file_id: str,
@@ -275,6 +341,81 @@ class AsyncImagesClient:
             file_id, limit=limit, min_similarity=min_similarity, request_options=request_options
         )
         return _response.data
+
+    async def view(
+        self,
+        file_id: str,
+        *,
+        x: typing.Optional[int] = None,
+        y: typing.Optional[int] = None,
+        width: typing.Optional[int] = None,
+        height: typing.Optional[int] = None,
+        frame_index: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[bytes]:
+        """
+        Look at an uploaded image file so you can describe, compare, or answer
+        questions about its content. Only works on image files the platform has
+        finished processing, which list_files reports with an
+        image_processing_status of completed. Select the user's Frame N with
+        frame_index=N-1. The default index 0 selects Frame 1.
+
+        With no region it shows the whole image, downscaled to fit. To zoom in,
+        pass a region in the original image's pixel coordinates: x and y are its
+        top-left corner, and width and height default to the rest of the image.
+        Smaller regions are shown at higher resolution, up to the original pixels.
+
+        Returns the view as a webp, which the X-Image-View response header
+        describes.
+
+        Requires an API key with the `read` scope.
+
+        Parameters
+        ----------
+        file_id : str
+
+        x : typing.Optional[int]
+
+        y : typing.Optional[int]
+
+        width : typing.Optional[int]
+
+        height : typing.Optional[int]
+
+        frame_index : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[bytes]
+            The view as a webp
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.images.view(
+                file_id="file_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.view(
+            file_id, x=x, y=y, width=width, height=height, frame_index=frame_index, request_options=request_options
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk
 
     async def list_annotations(
         self,
