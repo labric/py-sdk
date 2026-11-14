@@ -918,6 +918,8 @@ class RawJobsClient:
         Deletes the execution's created objects and their linked raw rows in one
         transaction, for undoing a test write that failed validation. Updates and
         deletes cannot be reversed and are reported as warnings in the result.
+        Returns 409 when another operation is writing to or reverting the
+        execution; retry shortly.
 
         Requires an API key with the `write` scope.
 
@@ -983,6 +985,17 @@ class RawJobsClient:
                 )
             if _response.status_code == 404:
                 raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -1906,6 +1919,8 @@ class AsyncRawJobsClient:
         Deletes the execution's created objects and their linked raw rows in one
         transaction, for undoing a test write that failed validation. Updates and
         deletes cannot be reversed and are reported as warnings in the result.
+        Returns 409 when another operation is writing to or reverting the
+        execution; retry shortly.
 
         Requires an API key with the `write` scope.
 
@@ -1971,6 +1986,17 @@ class AsyncRawJobsClient:
                 )
             if _response.status_code == 404:
                 raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,

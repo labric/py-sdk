@@ -401,6 +401,8 @@ class JobsClient:
         Deletes the execution's created objects and their linked raw rows in one
         transaction, for undoing a test write that failed validation. Updates and
         deletes cannot be reversed and are reported as warnings in the result.
+        Returns 409 when another operation is writing to or reverting the
+        execution; retry shortly.
 
         Requires an API key with the `write` scope.
 
@@ -862,6 +864,8 @@ class AsyncJobsClient:
         Deletes the execution's created objects and their linked raw rows in one
         transaction, for undoing a test write that failed validation. Updates and
         deletes cannot be reversed and are reported as warnings in the result.
+        Returns 409 when another operation is writing to or reverting the
+        execution; retry shortly.
 
         Requires an API key with the `write` scope.
 
