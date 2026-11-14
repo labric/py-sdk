@@ -3280,12 +3280,13 @@ client.images.annotate(
 Look at one saved annotation to judge whether its mask is right.
 
 Returns a webp of a square of the image around the annotation, with the
-mask's painted area tinted orange. A small annotation is enlarged to 256
-pixels across. The X-Image-View response header describes the view, and
-its summary says when the annotation is too long to fit in the square.
-Pass its region to view_image to see the same square without the tint.
-Get annotation ids from get_image_annotations. Returns 400 for an
-annotation that cannot be shown, such as one whose mask is empty.
+mask's painted area tinted orange. Pass show_mask=false to get the same
+square without the tint, which shows the pixels the mask covers. A small
+annotation is enlarged to 256 pixels across. The X-Image-View response
+header describes the view, and its summary says when the annotation is too
+long to fit in the square. Get annotation ids from get_image_annotations.
+Returns 400 for an annotation that cannot be shown, such as one whose mask
+is empty.
 
 Requires an API key with the `read` scope.
 </dd>
@@ -3338,6 +3339,14 @@ client.images.view_annotation(
 <dd>
 
 **annotation_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**show_mask:** `typing.Optional[bool]` 
     
 </dd>
 </dl>

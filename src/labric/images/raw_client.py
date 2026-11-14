@@ -626,18 +626,24 @@ class RawImagesClient:
 
     @contextlib.contextmanager
     def view_annotation(
-        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        annotation_id: str,
+        *,
+        show_mask: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Iterator[HttpResponse[typing.Iterator[bytes]]]:
         """
         Look at one saved annotation to judge whether its mask is right.
 
         Returns a webp of a square of the image around the annotation, with the
-        mask's painted area tinted orange. A small annotation is enlarged to 256
-        pixels across. The X-Image-View response header describes the view, and
-        its summary says when the annotation is too long to fit in the square.
-        Pass its region to view_image to see the same square without the tint.
-        Get annotation ids from get_image_annotations. Returns 400 for an
-        annotation that cannot be shown, such as one whose mask is empty.
+        mask's painted area tinted orange. Pass show_mask=false to get the same
+        square without the tint, which shows the pixels the mask covers. A small
+        annotation is enlarged to 256 pixels across. The X-Image-View response
+        header describes the view, and its summary says when the annotation is too
+        long to fit in the square. Get annotation ids from get_image_annotations.
+        Returns 400 for an annotation that cannot be shown, such as one whose mask
+        is empty.
 
         Requires an API key with the `read` scope.
 
@@ -646,6 +652,8 @@ class RawImagesClient:
         file_id : str
 
         annotation_id : str
+
+        show_mask : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
@@ -658,6 +666,9 @@ class RawImagesClient:
         with self._client_wrapper.httpx_client.stream(
             f"api/v1/images/{encode_path_param(file_id)}/annotations/{encode_path_param(annotation_id)}/view",
             method="GET",
+            params={
+                "show_mask": show_mask,
+            },
             request_options=request_options,
         ) as _response:
 
@@ -1359,18 +1370,24 @@ class AsyncRawImagesClient:
 
     @contextlib.asynccontextmanager
     async def view_annotation(
-        self, file_id: str, annotation_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        file_id: str,
+        annotation_id: str,
+        *,
+        show_mask: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[bytes]]]:
         """
         Look at one saved annotation to judge whether its mask is right.
 
         Returns a webp of a square of the image around the annotation, with the
-        mask's painted area tinted orange. A small annotation is enlarged to 256
-        pixels across. The X-Image-View response header describes the view, and
-        its summary says when the annotation is too long to fit in the square.
-        Pass its region to view_image to see the same square without the tint.
-        Get annotation ids from get_image_annotations. Returns 400 for an
-        annotation that cannot be shown, such as one whose mask is empty.
+        mask's painted area tinted orange. Pass show_mask=false to get the same
+        square without the tint, which shows the pixels the mask covers. A small
+        annotation is enlarged to 256 pixels across. The X-Image-View response
+        header describes the view, and its summary says when the annotation is too
+        long to fit in the square. Get annotation ids from get_image_annotations.
+        Returns 400 for an annotation that cannot be shown, such as one whose mask
+        is empty.
 
         Requires an API key with the `read` scope.
 
@@ -1379,6 +1396,8 @@ class AsyncRawImagesClient:
         file_id : str
 
         annotation_id : str
+
+        show_mask : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
@@ -1391,6 +1410,9 @@ class AsyncRawImagesClient:
         async with self._client_wrapper.httpx_client.stream(
             f"api/v1/images/{encode_path_param(file_id)}/annotations/{encode_path_param(annotation_id)}/view",
             method="GET",
+            params={
+                "show_mask": show_mask,
+            },
             request_options=request_options,
         ) as _response:
 
