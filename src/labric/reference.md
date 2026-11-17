@@ -1004,6 +1004,14 @@ client.jobs.create(
 <dl>
 <dd>
 
+**tags:** `typing.Optional[typing.List[str]]` — User-defined categories for grouping and filtering jobs. Stored in lowercase.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **trigger_enabled:** `typing.Optional[bool]` — True runs the job automatically when its trigger fires.
     
 </dd>
@@ -1214,6 +1222,14 @@ client.jobs.update(
 <dd>
 
 **description:** `typing.Optional[str]` — New description for the job. Pass an empty string to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tags:** `typing.Optional[typing.List[str]]` — New tags for the job, replacing its current tags. Pass an empty list to clear them.
     
 </dd>
 </dl>

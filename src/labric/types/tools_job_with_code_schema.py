@@ -27,6 +27,11 @@ class ToolsJobWithCodeSchema(UniversalBaseModel):
     draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
     """
 
+    tags: typing.List[str] = pydantic.Field()
+    """
+    User-defined categories for grouping and filtering jobs. Stored in lowercase.
+    """
+
     trigger: typing.Optional[JobTriggerSchema] = None
     parameter_definitions: typing.Optional[typing.List[ParameterDefinitionSchema]] = None
     script_version: typing.Optional[int] = pydantic.Field(default=None)

@@ -83,6 +83,7 @@ class JobsClient:
         name: str,
         code: str,
         description: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Sequence[str]] = OMIT,
         trigger_enabled: typing.Optional[bool] = OMIT,
         trigger_category: typing.Optional[JobTriggerCategory] = OMIT,
         trigger_instrument_id: typing.Optional[str] = OMIT,
@@ -110,6 +111,9 @@ class JobsClient:
 
         description : typing.Optional[str]
             What the job does.
+
+        tags : typing.Optional[typing.Sequence[str]]
+            User-defined categories for grouping and filtering jobs. Stored in lowercase.
 
         trigger_enabled : typing.Optional[bool]
             True runs the job automatically when its trigger fires.
@@ -150,6 +154,7 @@ class JobsClient:
             name=name,
             code=code,
             description=description,
+            tags=tags,
             trigger_enabled=trigger_enabled,
             trigger_category=trigger_category,
             trigger_instrument_id=trigger_instrument_id,
@@ -200,6 +205,7 @@ class JobsClient:
         *,
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Sequence[str]] = OMIT,
         code: typing.Optional[str] = OMIT,
         edits: typing.Optional[typing.Sequence[ScriptEditSchema]] = OMIT,
         archived: typing.Optional[bool] = OMIT,
@@ -233,6 +239,9 @@ class JobsClient:
 
         description : typing.Optional[str]
             New description for the job. Pass an empty string to clear it.
+
+        tags : typing.Optional[typing.Sequence[str]]
+            New tags for the job, replacing its current tags. Pass an empty list to clear them.
 
         code : typing.Optional[str]
             Complete new Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block. For a change to part of the script, pass edits instead.
@@ -284,6 +293,7 @@ class JobsClient:
             job_id,
             name=name,
             description=description,
+            tags=tags,
             code=code,
             edits=edits,
             archived=archived,
@@ -504,6 +514,7 @@ class AsyncJobsClient:
         name: str,
         code: str,
         description: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Sequence[str]] = OMIT,
         trigger_enabled: typing.Optional[bool] = OMIT,
         trigger_category: typing.Optional[JobTriggerCategory] = OMIT,
         trigger_instrument_id: typing.Optional[str] = OMIT,
@@ -531,6 +542,9 @@ class AsyncJobsClient:
 
         description : typing.Optional[str]
             What the job does.
+
+        tags : typing.Optional[typing.Sequence[str]]
+            User-defined categories for grouping and filtering jobs. Stored in lowercase.
 
         trigger_enabled : typing.Optional[bool]
             True runs the job automatically when its trigger fires.
@@ -579,6 +593,7 @@ class AsyncJobsClient:
             name=name,
             code=code,
             description=description,
+            tags=tags,
             trigger_enabled=trigger_enabled,
             trigger_category=trigger_category,
             trigger_instrument_id=trigger_instrument_id,
@@ -639,6 +654,7 @@ class AsyncJobsClient:
         *,
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Sequence[str]] = OMIT,
         code: typing.Optional[str] = OMIT,
         edits: typing.Optional[typing.Sequence[ScriptEditSchema]] = OMIT,
         archived: typing.Optional[bool] = OMIT,
@@ -672,6 +688,9 @@ class AsyncJobsClient:
 
         description : typing.Optional[str]
             New description for the job. Pass an empty string to clear it.
+
+        tags : typing.Optional[typing.Sequence[str]]
+            New tags for the job, replacing its current tags. Pass an empty list to clear them.
 
         code : typing.Optional[str]
             Complete new Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block. For a change to part of the script, pass edits instead.
@@ -731,6 +750,7 @@ class AsyncJobsClient:
             job_id,
             name=name,
             description=description,
+            tags=tags,
             code=code,
             edits=edits,
             archived=archived,
