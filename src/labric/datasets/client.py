@@ -33,6 +33,8 @@ class DatasetsClient:
         *,
         publish_status: typing.Optional[PublishStatus] = None,
         user_id: typing.Optional[str] = None,
+        exclude_publish_status: typing.Optional[bool] = None,
+        exclude_user: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[DatasetSchema]:
         """
@@ -46,6 +48,10 @@ class DatasetsClient:
         publish_status : typing.Optional[PublishStatus]
 
         user_id : typing.Optional[str]
+
+        exclude_publish_status : typing.Optional[bool]
+
+        exclude_user : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -65,7 +71,11 @@ class DatasetsClient:
         client.datasets.list()
         """
         _response = self._raw_client.list(
-            publish_status=publish_status, user_id=user_id, request_options=request_options
+            publish_status=publish_status,
+            user_id=user_id,
+            exclude_publish_status=exclude_publish_status,
+            exclude_user=exclude_user,
+            request_options=request_options,
         )
         return _response.data
 
@@ -282,6 +292,8 @@ class AsyncDatasetsClient:
         *,
         publish_status: typing.Optional[PublishStatus] = None,
         user_id: typing.Optional[str] = None,
+        exclude_publish_status: typing.Optional[bool] = None,
+        exclude_user: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[DatasetSchema]:
         """
@@ -295,6 +307,10 @@ class AsyncDatasetsClient:
         publish_status : typing.Optional[PublishStatus]
 
         user_id : typing.Optional[str]
+
+        exclude_publish_status : typing.Optional[bool]
+
+        exclude_user : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -322,7 +338,11 @@ class AsyncDatasetsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.list(
-            publish_status=publish_status, user_id=user_id, request_options=request_options
+            publish_status=publish_status,
+            user_id=user_id,
+            exclude_publish_status=exclude_publish_status,
+            exclude_user=exclude_user,
+            request_options=request_options,
         )
         return _response.data
 

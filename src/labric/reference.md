@@ -1648,6 +1648,22 @@ client.visualizations.list()
 <dl>
 <dd>
 
+**exclude_publish_status:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**exclude_user:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -2070,6 +2086,22 @@ client.datasets.list()
 <dd>
 
 **user_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**exclude_publish_status:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**exclude_user:** `typing.Optional[bool]` 
     
 </dd>
 </dl>
@@ -3859,6 +3891,22 @@ client.dashboards.list()
 <dd>
 
 **user_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**exclude_publish_status:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**exclude_user:** `typing.Optional[bool]` 
     
 </dd>
 </dl>

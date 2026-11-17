@@ -37,6 +37,8 @@ class RawVisualizationsClient:
         *,
         publish_status: typing.Optional[PublishStatus] = None,
         user_id: typing.Optional[str] = None,
+        exclude_publish_status: typing.Optional[bool] = None,
+        exclude_user: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[VisualizationSchema]]:
         """
@@ -50,6 +52,10 @@ class RawVisualizationsClient:
         publish_status : typing.Optional[PublishStatus]
 
         user_id : typing.Optional[str]
+
+        exclude_publish_status : typing.Optional[bool]
+
+        exclude_user : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -65,6 +71,8 @@ class RawVisualizationsClient:
             params={
                 "publish_status": publish_status,
                 "user_id": user_id,
+                "exclude_publish_status": exclude_publish_status,
+                "exclude_user": exclude_user,
             },
             request_options=request_options,
         )
@@ -687,6 +695,8 @@ class AsyncRawVisualizationsClient:
         *,
         publish_status: typing.Optional[PublishStatus] = None,
         user_id: typing.Optional[str] = None,
+        exclude_publish_status: typing.Optional[bool] = None,
+        exclude_user: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[VisualizationSchema]]:
         """
@@ -700,6 +710,10 @@ class AsyncRawVisualizationsClient:
         publish_status : typing.Optional[PublishStatus]
 
         user_id : typing.Optional[str]
+
+        exclude_publish_status : typing.Optional[bool]
+
+        exclude_user : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -715,6 +729,8 @@ class AsyncRawVisualizationsClient:
             params={
                 "publish_status": publish_status,
                 "user_id": user_id,
+                "exclude_publish_status": exclude_publish_status,
+                "exclude_user": exclude_user,
             },
             request_options=request_options,
         )
