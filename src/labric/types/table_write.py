@@ -30,7 +30,7 @@ class TableWrite(UniversalBaseModel):
 
     key: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    Columns that identify an existing row for upsert, update, and delete. Defaults to the primary key.
+    Columns that identify an existing row for upsert, update, and delete. Defaults to the primary key. JSON columns ignore object key order and compare numbers by value.
     """
 
     cascade: typing.Optional[bool] = pydantic.Field(default=None)
