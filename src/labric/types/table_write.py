@@ -20,7 +20,7 @@ class TableWrite(UniversalBaseModel):
 
     rows: typing.List[typing.Dict[str, typing.Any]] = pydantic.Field()
     """
-    Rows keyed by column name. A row may carry '_ref': '<label>' so later rows and series can point at it with '@<label>'. A foreign key value may be an id, an '@<label>' reference to an earlier row, or a lookup object such as {'name': 'S-001'} that matches exactly one row that existed before the request. The object_id, parent_id, and child_id columns of operationsubject and entityderivation also take an '@<label>' reference. Omit a string 'id' primary key to have it generated.
+    Rows keyed by column name. A row may carry '_ref': '<label>' so later rows and series can point at it with '@<label>'. A foreign key value may be an id, an '@<label>' reference to an earlier row, or a lookup object such as {'name': 'S-001'} that matches exactly one row that existed before the request. The object_id, parent_id, and child_id columns of operationsubject and entityderivation also take an '@<label>' reference. Omit a string 'id' primary key to have it generated. Leading and trailing whitespace is automatically removed from strings before they are stored or matched. JSON object keys are kept as given.
     """
 
     mode: typing.Optional[TableWriteMode] = pydantic.Field(default=None)

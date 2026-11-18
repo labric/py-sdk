@@ -19,7 +19,7 @@ class SeriesWrite(UniversalBaseModel):
 
     parent: SeriesWriteParent = pydantic.Field()
     """
-    Parent row that owns the series: an id, an '@<label>' reference to a row written in this request, or a lookup object such as {'name': 'M-001'}.
+    Parent row that owns the series: an id, an '@<label>' reference to a row written in this request, or a lookup object such as {'name': 'M-001'}. Leading and trailing whitespace is automatically removed before matching.
     """
 
     parent_column: typing.Optional[str] = pydantic.Field(default=None)
@@ -29,7 +29,7 @@ class SeriesWrite(UniversalBaseModel):
 
     columns: typing.Dict[str, typing.List[typing.Any]] = pydantic.Field()
     """
-    Values keyed by column name. Every list holds one value per point and all lists have the same length. An integer 'order' column is filled with each point's position unless given here.
+    Values keyed by column name. Every list holds one value per point and all lists have the same length. An integer 'order' column is filled with each point's position unless given here. Leading and trailing whitespace is automatically removed from string values.
     """
 
     if IS_PYDANTIC_V2:

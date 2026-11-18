@@ -2583,7 +2583,7 @@ client.tools.write(
 <dl>
 <dd>
 
-**data:** `typing.List[typing.Dict[str, typing.Any]]` — List of record dicts to write.
+**data:** `typing.List[typing.Dict[str, typing.Any]]` — List of record dicts to write. Leading and trailing whitespace is automatically removed from strings before they are stored or matched. JSON object keys are kept as given.
     
 </dd>
 </dl>

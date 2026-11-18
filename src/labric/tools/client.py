@@ -74,7 +74,7 @@ class ToolsClient:
             The type of target. Currently 'table' or 'core-table'. Only some core tables are writable. Tables describing the organization, such as organizationmember, are read-only.
 
         data : typing.Sequence[typing.Dict[str, typing.Any]]
-            List of record dicts to write.
+            List of record dicts to write. Leading and trailing whitespace is automatically removed from strings before they are stored or matched. JSON object keys are kept as given.
 
         mode : str
             Write mode (e.g. 'create', 'create-or-update').
@@ -322,7 +322,7 @@ class AsyncToolsClient:
             The type of target. Currently 'table' or 'core-table'. Only some core tables are writable. Tables describing the organization, such as organizationmember, are read-only.
 
         data : typing.Sequence[typing.Dict[str, typing.Any]]
-            List of record dicts to write.
+            List of record dicts to write. Leading and trailing whitespace is automatically removed from strings before they are stored or matched. JSON object keys are kept as given.
 
         mode : str
             Write mode (e.g. 'create', 'create-or-update').
