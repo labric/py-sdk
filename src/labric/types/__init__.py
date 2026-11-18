@@ -15,9 +15,6 @@ if typing.TYPE_CHECKING:
     from .agent_run_usage import AgentRunUsage
     from .agent_tool_call import AgentToolCall
     from .annotation_schema import AnnotationSchema
-    from .batch_write_options import BatchWriteOptions
-    from .batch_write_options_mode import BatchWriteOptionsMode
-    from .batch_write_response import BatchWriteResponse
     from .capped_query_result import CappedQueryResult
     from .create_visualization_schema import CreateVisualizationSchema
     from .current_device_status_schema import CurrentDeviceStatusSchema
@@ -63,7 +60,6 @@ if typing.TYPE_CHECKING:
     from .similar_image_match_schema import SimilarImageMatchSchema
     from .similar_image_matches_schema import SimilarImageMatchesSchema
     from .start_job_execution_schema import StartJobExecutionSchema
-    from .table_summary import TableSummary
     from .table_summary_schema import TableSummarySchema
     from .table_write import TableWrite
     from .table_write_mode import TableWriteMode
@@ -89,7 +85,6 @@ if typing.TYPE_CHECKING:
     from .write_data_error_response import WriteDataErrorResponse
     from .write_data_problem import WriteDataProblem
     from .write_data_response import WriteDataResponse
-    from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
     "AccessLevel": ".access_level",
     "ActivityActorSchema": ".activity_actor_schema",
@@ -100,9 +95,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AgentRunUsage": ".agent_run_usage",
     "AgentToolCall": ".agent_tool_call",
     "AnnotationSchema": ".annotation_schema",
-    "BatchWriteOptions": ".batch_write_options",
-    "BatchWriteOptionsMode": ".batch_write_options_mode",
-    "BatchWriteResponse": ".batch_write_response",
     "CappedQueryResult": ".capped_query_result",
     "CreateVisualizationSchema": ".create_visualization_schema",
     "CurrentDeviceStatusSchema": ".current_device_status_schema",
@@ -148,7 +140,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SimilarImageMatchSchema": ".similar_image_match_schema",
     "SimilarImageMatchesSchema": ".similar_image_matches_schema",
     "StartJobExecutionSchema": ".start_job_execution_schema",
-    "TableSummary": ".table_summary",
     "TableSummarySchema": ".table_summary_schema",
     "TableWrite": ".table_write",
     "TableWriteMode": ".table_write_mode",
@@ -174,7 +165,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WriteDataErrorResponse": ".write_data_error_response",
     "WriteDataProblem": ".write_data_problem",
     "WriteDataResponse": ".write_data_response",
-    "WritePlan": ".write_plan",
 }
 
 
@@ -209,9 +199,6 @@ __all__ = [
     "AgentRunUsage",
     "AgentToolCall",
     "AnnotationSchema",
-    "BatchWriteOptions",
-    "BatchWriteOptionsMode",
-    "BatchWriteResponse",
     "CappedQueryResult",
     "CreateVisualizationSchema",
     "CurrentDeviceStatusSchema",
@@ -257,7 +244,6 @@ __all__ = [
     "SimilarImageMatchSchema",
     "SimilarImageMatchesSchema",
     "StartJobExecutionSchema",
-    "TableSummary",
     "TableSummarySchema",
     "TableWrite",
     "TableWriteMode",
@@ -283,5 +269,4 @@ __all__ = [
     "WriteDataErrorResponse",
     "WriteDataProblem",
     "WriteDataResponse",
-    "WritePlan",
 ]

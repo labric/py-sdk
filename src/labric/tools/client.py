@@ -4,8 +4,6 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.batch_write_options import BatchWriteOptions
-from ..types.batch_write_response import BatchWriteResponse
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -205,62 +203,6 @@ class ToolsClient:
             mode=mode,
             request_options=request_options,
         )
-        return _response.data
-
-    def batch_write(
-        self,
-        *,
-        tables: typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]],
-        options: typing.Optional[BatchWriteOptions] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> BatchWriteResponse:
-        """
-        Write records to multiple tables in a single transaction.
-
-        Deprecated: use write_data (client.data.write), which also writes raw
-        series and supports update and delete.
-
-        Supports:
-        - Batch references: Use "_ref" to label records, "@refname" to reference them
-        - Natural keys: Use human-readable values for foreign keys (e.g., recipe name)
-        - Automatic FK ordering: Tables are inserted in dependency order
-        - Upsert mode: Update existing records based on match columns
-        - Dry run: Validate without committing changes
-
-        Committed writes are recorded against a job execution (created automatically
-        if not supplied) and the job_execution_id is returned, so the write can be
-        reverted as a unit.
-
-        Requires an API key with the `write` scope.
-
-        Parameters
-        ----------
-        tables : typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]]
-            Map of table_name to list of records to insert.
-
-        options : typing.Optional[BatchWriteOptions]
-            Optional write options (mode, match_on, dry_run, return_records).
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        BatchWriteResponse
-            OK
-
-        Examples
-        --------
-        from labric import Labric
-
-        client = Labric(
-            api_key="YOUR_API_KEY",
-        )
-        client.tools.batch_write(
-            tables={"key": [{"key": "value"}]},
-        )
-        """
-        _response = self._raw_client.batch_write(tables=tables, options=options, request_options=request_options)
         return _response.data
 
 
@@ -469,68 +411,4 @@ class AsyncToolsClient:
             mode=mode,
             request_options=request_options,
         )
-        return _response.data
-
-    async def batch_write(
-        self,
-        *,
-        tables: typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]],
-        options: typing.Optional[BatchWriteOptions] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> BatchWriteResponse:
-        """
-        Write records to multiple tables in a single transaction.
-
-        Deprecated: use write_data (client.data.write), which also writes raw
-        series and supports update and delete.
-
-        Supports:
-        - Batch references: Use "_ref" to label records, "@refname" to reference them
-        - Natural keys: Use human-readable values for foreign keys (e.g., recipe name)
-        - Automatic FK ordering: Tables are inserted in dependency order
-        - Upsert mode: Update existing records based on match columns
-        - Dry run: Validate without committing changes
-
-        Committed writes are recorded against a job execution (created automatically
-        if not supplied) and the job_execution_id is returned, so the write can be
-        reverted as a unit.
-
-        Requires an API key with the `write` scope.
-
-        Parameters
-        ----------
-        tables : typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]]
-            Map of table_name to list of records to insert.
-
-        options : typing.Optional[BatchWriteOptions]
-            Optional write options (mode, match_on, dry_run, return_records).
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        BatchWriteResponse
-            OK
-
-        Examples
-        --------
-        import asyncio
-
-        from labric import AsyncLabric
-
-        client = AsyncLabric(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.tools.batch_write(
-                tables={"key": [{"key": "value"}]},
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.batch_write(tables=tables, options=options, request_options=request_options)
         return _response.data
