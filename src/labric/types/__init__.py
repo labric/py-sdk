@@ -34,6 +34,7 @@ if typing.TYPE_CHECKING:
     from .file_upload_schema import FileUploadSchema
     from .file_upload_url_schema import FileUploadUrlSchema
     from .instrument_name_schema import InstrumentNameSchema
+    from .job_network_access import JobNetworkAccess
     from .job_trigger_category import JobTriggerCategory
     from .job_trigger_schema import JobTriggerSchema
     from .mask_bounding_box_schema import MaskBoundingBoxSchema
@@ -114,6 +115,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FileUploadSchema": ".file_upload_schema",
     "FileUploadUrlSchema": ".file_upload_url_schema",
     "InstrumentNameSchema": ".instrument_name_schema",
+    "JobNetworkAccess": ".job_network_access",
     "JobTriggerCategory": ".job_trigger_category",
     "JobTriggerSchema": ".job_trigger_schema",
     "MaskBoundingBoxSchema": ".mask_bounding_box_schema",
@@ -218,6 +220,7 @@ __all__ = [
     "FileUploadSchema",
     "FileUploadUrlSchema",
     "InstrumentNameSchema",
+    "JobNetworkAccess",
     "JobTriggerCategory",
     "JobTriggerSchema",
     "MaskBoundingBoxSchema",

@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .job_network_access import JobNetworkAccess
 from .job_trigger_schema import JobTriggerSchema
 from .parameter_definition_schema import ParameterDefinitionSchema
 from .publish_status import PublishStatus
@@ -34,6 +35,16 @@ class ToolsJobWithCodeSchema(UniversalBaseModel):
 
     trigger: typing.Optional[JobTriggerSchema] = None
     parameter_definitions: typing.Optional[typing.List[ParameterDefinitionSchema]] = None
+    network_access: JobNetworkAccess = pydantic.Field()
+    """
+    restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+    """
+
+    network_allowed_domains: typing.List[str] = pydantic.Field()
+    """
+    Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains.
+    """
+
     script_version: typing.Optional[int] = pydantic.Field(default=None)
     """
     Revision number of the job's current script, starting at 1. Each code change stores a new script and adds one.

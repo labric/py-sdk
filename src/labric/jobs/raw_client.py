@@ -19,6 +19,7 @@ from ..errors.not_found_error import NotFoundError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.error_schema import ErrorSchema
+from ..types.job_network_access import JobNetworkAccess
 from ..types.job_trigger_category import JobTriggerCategory
 from ..types.off_platform_job_execution_schema import OffPlatformJobExecutionSchema
 from ..types.parameter_definition_schema import ParameterDefinitionSchema
@@ -176,6 +177,8 @@ class RawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        network_access: typing.Optional[JobNetworkAccess] = OMIT,
+        network_allowed_domains: typing.Optional[typing.Sequence[str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ToolsJobSchema]:
         """
@@ -217,6 +220,12 @@ class RawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        network_access : typing.Optional[JobNetworkAccess]
+            restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+
+        network_allowed_domains : typing.Optional[typing.Sequence[str]]
+            Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -242,6 +251,8 @@ class RawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "network_access": network_access,
+                "network_allowed_domains": network_allowed_domains,
             },
             headers={
                 "content-type": "application/json",
@@ -473,12 +484,14 @@ class RawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        network_access: typing.Optional[JobNetworkAccess] = OMIT,
+        network_allowed_domains: typing.Optional[typing.Sequence[str]] = OMIT,
         publish_status: typing.Optional[PublishStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ToolsJobSchema]:
         """
-        Change a job's name, description, code, trigger, or parameters, or
-        archive it.
+        Change a job's name, description, code, trigger, parameters, or
+        network access, or archive it.
 
         Only the fields passed are changed. To change part of the script, pass
         edits: exact replacements of text in the current script. Pass code only to
@@ -526,6 +539,12 @@ class RawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        network_access : typing.Optional[JobNetworkAccess]
+            restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+
+        network_allowed_domains : typing.Optional[typing.Sequence[str]]
+            Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains. Replaces the job's current list. Pass an empty list to clear it.
+
         publish_status : typing.Optional[PublishStatus]
             draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
 
@@ -558,6 +577,8 @@ class RawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "network_access": network_access,
+                "network_allowed_domains": network_allowed_domains,
                 "publish_status": publish_status,
             },
             headers={
@@ -1187,6 +1208,8 @@ class AsyncRawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        network_access: typing.Optional[JobNetworkAccess] = OMIT,
+        network_allowed_domains: typing.Optional[typing.Sequence[str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ToolsJobSchema]:
         """
@@ -1228,6 +1251,12 @@ class AsyncRawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        network_access : typing.Optional[JobNetworkAccess]
+            restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+
+        network_allowed_domains : typing.Optional[typing.Sequence[str]]
+            Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1253,6 +1282,8 @@ class AsyncRawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "network_access": network_access,
+                "network_allowed_domains": network_allowed_domains,
             },
             headers={
                 "content-type": "application/json",
@@ -1484,12 +1515,14 @@ class AsyncRawJobsClient:
         trigger_instrument_id: typing.Optional[str] = OMIT,
         trigger_conditions: typing.Optional[typing.Dict[str, typing.Any]] = OMIT,
         parameter_definitions: typing.Optional[typing.Sequence[ParameterDefinitionSchema]] = OMIT,
+        network_access: typing.Optional[JobNetworkAccess] = OMIT,
+        network_allowed_domains: typing.Optional[typing.Sequence[str]] = OMIT,
         publish_status: typing.Optional[PublishStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ToolsJobSchema]:
         """
-        Change a job's name, description, code, trigger, or parameters, or
-        archive it.
+        Change a job's name, description, code, trigger, parameters, or
+        network access, or archive it.
 
         Only the fields passed are changed. To change part of the script, pass
         edits: exact replacements of text in the current script. Pass code only to
@@ -1537,6 +1570,12 @@ class AsyncRawJobsClient:
         parameter_definitions : typing.Optional[typing.Sequence[ParameterDefinitionSchema]]
             Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
 
+        network_access : typing.Optional[JobNetworkAccess]
+            restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+
+        network_allowed_domains : typing.Optional[typing.Sequence[str]]
+            Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains. Replaces the job's current list. Pass an empty list to clear it.
+
         publish_status : typing.Optional[PublishStatus]
             draft while the job is still being worked on; in_review once its author considers it ready for an admin to publish; published once it is ready for others to rely on. New jobs start as draft.
 
@@ -1569,6 +1608,8 @@ class AsyncRawJobsClient:
                     annotation=typing.Optional[typing.Sequence[ParameterDefinitionSchema]],
                     direction="write",
                 ),
+                "network_access": network_access,
+                "network_allowed_domains": network_allowed_domains,
                 "publish_status": publish_status,
             },
             headers={

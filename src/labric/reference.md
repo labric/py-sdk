@@ -1052,6 +1052,22 @@ client.jobs.create(
 <dl>
 <dd>
 
+**network_access:** `typing.Optional[JobNetworkAccess]` — restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**network_allowed_domains:** `typing.Optional[typing.List[str]]` — Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1154,8 +1170,8 @@ client.jobs.get(
 <dl>
 <dd>
 
-Change a job's name, description, code, trigger, or parameters, or
-archive it.
+Change a job's name, description, code, trigger, parameters, or
+network access, or archive it.
 
 Only the fields passed are changed. To change part of the script, pass
 edits: exact replacements of text in the current script. Pass code only to
@@ -1294,6 +1310,22 @@ client.jobs.update(
 <dd>
 
 **parameter_definitions:** `typing.Optional[typing.List[ParameterDefinitionSchema]]` — Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**network_access:** `typing.Optional[JobNetworkAccess]` — restricted lets the script reach the platform, the Python package index, and the allowed domains of the organization and the job. unrestricted lets it reach any host. An organization can forbid unrestricted jobs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**network_allowed_domains:** `typing.Optional[typing.List[str]]` — Domains a restricted job reaches in addition to its organization's. Each is a hostname, such as api.example.com, which matches that host only, or *.example.com, which matches its subdomains. Domains apply to HTTP on port 80 and HTTPS on port 443. An organization can forbid per-job domains. Replaces the job's current list. Pass an empty list to clear it.
     
 </dd>
 </dl>
