@@ -214,7 +214,8 @@ class DashboardsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> DashboardSchema:
         """
-        Requires edit access to the dashboard.
+        Changes a dashboard's name, description, or publish status. Only the
+        fields passed are changed. Requires edit access to the dashboard.
 
         Requires an API key with the `write` scope.
 
@@ -494,7 +495,8 @@ class AsyncDashboardsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> DashboardSchema:
         """
-        Requires edit access to the dashboard.
+        Changes a dashboard's name, description, or publish status. Only the
+        fields passed are changed. Requires edit access to the dashboard.
 
         Requires an API key with the `write` scope.
 

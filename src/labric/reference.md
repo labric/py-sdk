@@ -1951,7 +1951,9 @@ client.visualizations.delete(
 <dl>
 <dd>
 
-Requires edit access to the visualization.
+Changes a visualization's name, description, publish status, dataset,
+or specification. Only the fields passed are changed. Requires edit
+access to the visualization.
 
 Requires an API key with the `write` scope.
 </dd>
@@ -2420,8 +2422,10 @@ client.datasets.delete(
 <dl>
 <dd>
 
-Requires edit access to the dataset. Visualizations built on the
-dataset plot the new query the next time they load.
+Changes a dataset's name, description, publish status, query, or
+default parameters. Only the fields passed are changed. Requires edit
+access to the dataset. Visualizations built on the dataset plot the new
+query the next time they load.
 
 Requires an API key with the `write` scope.
 </dd>
@@ -4118,7 +4122,8 @@ client.dashboards.delete(
 <dl>
 <dd>
 
-Requires edit access to the dashboard.
+Changes a dashboard's name, description, or publish status. Only the
+fields passed are changed. Requires edit access to the dashboard.
 
 Requires an API key with the `write` scope.
 </dd>

@@ -217,8 +217,10 @@ class DatasetsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> DatasetSchema:
         """
-        Requires edit access to the dataset. Visualizations built on the
-        dataset plot the new query the next time they load.
+        Changes a dataset's name, description, publish status, query, or
+        default parameters. Only the fields passed are changed. Requires edit
+        access to the dataset. Visualizations built on the dataset plot the new
+        query the next time they load.
 
         Requires an API key with the `write` scope.
 
@@ -510,8 +512,10 @@ class AsyncDatasetsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> DatasetSchema:
         """
-        Requires edit access to the dataset. Visualizations built on the
-        dataset plot the new query the next time they load.
+        Changes a dataset's name, description, publish status, query, or
+        default parameters. Only the fields passed are changed. Requires edit
+        access to the dataset. Visualizations built on the dataset plot the new
+        query the next time they load.
 
         Requires an API key with the `write` scope.
 

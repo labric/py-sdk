@@ -229,7 +229,9 @@ class VisualizationsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> VisualizationSchema:
         """
-        Requires edit access to the visualization.
+        Changes a visualization's name, description, publish status, dataset,
+        or specification. Only the fields passed are changed. Requires edit
+        access to the visualization.
 
         Requires an API key with the `write` scope.
 
@@ -531,7 +533,9 @@ class AsyncVisualizationsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> VisualizationSchema:
         """
-        Requires edit access to the visualization.
+        Changes a visualization's name, description, publish status, dataset,
+        or specification. Only the fields passed are changed. Requires edit
+        access to the visualization.
 
         Requires an API key with the `write` scope.
 
