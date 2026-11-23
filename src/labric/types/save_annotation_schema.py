@@ -16,6 +16,11 @@ class SaveAnnotationSchema(UniversalBaseModel):
     width: typing.Optional[int] = None
     height: typing.Optional[int] = None
     label: str
+    source_channels: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
+    """
+    Zero-based source channels used to draw the mask, if known.
+    """
+
     frame_index: typing.Optional[int] = None
     is_human_vetted: typing.Optional[bool] = None
     file_id: typing.Optional[str] = None

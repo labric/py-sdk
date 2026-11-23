@@ -10,6 +10,11 @@ from .mask_bounding_box_schema import MaskBoundingBoxSchema
 
 class AnnotationSchema(UniversalBaseModel):
     frame_index: typing.Optional[int] = None
+    source_channels: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
+    """
+    Zero-based source channels, or null if unknown.
+    """
+
     id: str
     label: str
     mask_url: typing.Optional[str] = None
